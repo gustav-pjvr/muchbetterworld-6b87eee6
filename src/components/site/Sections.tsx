@@ -239,7 +239,7 @@ export function Contact() {
       <div className="mx-auto max-w-3xl px-6">
         <SectionHeading
           eyebrow="Contact"
-          title="Let's Build Something Better"
+          title="Lets make something better, much better."
           intro="Ready to improve your business, optimize operations, or create a stronger online presence?"
         />
         <div className="mb-10 text-center">
