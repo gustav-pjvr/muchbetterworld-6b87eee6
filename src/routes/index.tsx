@@ -23,7 +23,7 @@ export const Route = createFileRoute("/")({
         content:
           "MuchBetter delivers business analysis, consulting, and website development that turn strategy into measurable results.",
       },
-      { property: "og:title", content: "MuchBetterWorld — Better solutions. Much better World." },
+      { property: "og:title", content: "MuchBetter — Better solutions. Much better World." },
       {
         property: "og:description",
         content:
