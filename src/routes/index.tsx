@@ -42,8 +42,8 @@ function Hero() {
       id="top"
       className="relative isolate min-h-screen flex items-center justify-center overflow-hidden bg-background"
     >
-      <SpinningEarth />
       <CodeStreams />
+      <SpinningEarth />
       <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/30 to-background pointer-events-none" />
       <div className="relative z-10 mx-auto max-w-5xl px-6 py-32 text-center animate-fade-in">
         <p className="text-sm font-semibold uppercase tracking-[0.25em] text-accent">
