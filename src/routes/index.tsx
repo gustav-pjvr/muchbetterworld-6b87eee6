@@ -50,7 +50,7 @@ function Hero() {
           className="animate-hero text-sm font-semibold uppercase tracking-[0.25em] text-accent"
           style={{ animationDelay: "0ms" }}
         >
-          MuchBetterWorld
+          MuchBetter
         </p>
         <h1
           className="animate-hero mt-6 text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tight text-foreground leading-[1.05]"
