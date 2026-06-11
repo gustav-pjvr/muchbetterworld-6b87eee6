@@ -78,7 +78,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Much Better" },
-      { name: "description", content: "MuchBetterWorld offers business analysis, consulting, and website development services." },
+      { name: "description", content: "MuchBetter offers business analysis, consulting, and website development services." },
       { name: "author", content: "Lovable" },
       { property: "og:title", content: "Much Better" },
       { property: "og:description", content: "MuchBetterWorld offers business analysis, consulting, and website development services." },
