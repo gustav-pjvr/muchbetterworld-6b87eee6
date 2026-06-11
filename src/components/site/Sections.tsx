@@ -245,7 +245,7 @@ export function Contact() {
         <div className="mb-10 text-center">
           <h3 className="text-xl font-semibold text-foreground">Get In Touch</h3>
           <div className="mt-4 flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm text-muted-foreground">
-            <a href="mailto:hello@muchbetterworld.com" className="hover:text-foreground">Email: hello@muchbetterworld.com</a>
+            <a href="mailto:hello@muchbetter.world" className="hover:text-foreground">Email: hello@muchbetter.world</a>
             <span>Phone: +27 XX XXX XXXX</span>
             <span>Location: South Africa</span>
           </div>
