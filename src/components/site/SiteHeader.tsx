@@ -70,7 +70,7 @@ export function SiteHeader() {
           className="flex items-center gap-2 font-semibold tracking-tight text-foreground"
         >
           <Globe2 className="h-6 w-6 text-accent" />
-          <span>MuchBetterWorld</span>
+          <span>MuchBetter</span>
         </a>
 
         <nav className="hidden md:flex items-center gap-1">
