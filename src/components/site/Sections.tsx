@@ -307,7 +307,7 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-border bg-background py-10">
       <div className="mx-auto max-w-7xl px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-        <p>© {new Date().getFullYear()} MuchBetterWorld. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} MuchBetter. All rights reserved.</p>
         <p>Better solutions. Much better World.</p>
       </div>
     </footer>
