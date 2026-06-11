@@ -55,7 +55,7 @@ export function About() {
         <SectionHeading
           eyebrow="About"
           title="Building Better Businesses Through Better Solutions"
-          intro="MuchBetterWorld helps organizations identify opportunities, solve operational challenges, and implement digital solutions that create measurable results."
+          intro="MuchBetter helps organizations identify opportunities, solve operational challenges, and implement digital solutions that create measurable results."
         />
         <div className="mx-auto max-w-4xl space-y-6 text-lg leading-relaxed text-muted-foreground">
           <p>
