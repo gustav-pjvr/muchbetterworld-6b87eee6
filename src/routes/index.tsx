@@ -45,20 +45,32 @@ function Hero() {
       <CodeStreams />
       <SpinningEarth />
       <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/30 to-background pointer-events-none" />
-      <div className="relative z-10 mx-auto max-w-5xl px-6 py-32 text-center animate-fade-in">
-        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-accent">
+      <div className="relative z-10 mx-auto max-w-5xl px-6 py-32 text-center">
+        <p
+          className="animate-hero text-sm font-semibold uppercase tracking-[0.25em] text-accent"
+          style={{ animationDelay: "0ms" }}
+        >
           MuchBetterWorld
         </p>
-        <h1 className="mt-6 text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tight text-foreground leading-[1.05]">
+        <h1
+          className="animate-hero mt-6 text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tight text-foreground leading-[1.05]"
+          style={{ animationDelay: "120ms" }}
+        >
           Better solutions.
           <br />
           <span className="text-primary">Much better World.</span>
         </h1>
-        <p className="mx-auto mt-8 max-w-2xl text-lg md:text-xl text-muted-foreground">
+        <p
+          className="animate-hero mx-auto mt-8 max-w-2xl text-lg md:text-xl text-muted-foreground"
+          style={{ animationDelay: "240ms" }}
+        >
           Business analysis, consulting, and website development — crafted to move
           your organization forward, measurably.
         </p>
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+        <div
+          className="animate-hero mt-10 flex flex-wrap items-center justify-center gap-3"
+          style={{ animationDelay: "380ms" }}
+        >
           <Button size="lg" onClick={scrollTo("contact")} className="gap-2">
             Start a conversation <ArrowRight className="h-4 w-4" />
           </Button>

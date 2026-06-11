@@ -149,7 +149,7 @@ html {
 
 @keyframes earth-spin {
   from { background-position: 0% 50%; }
-  to { background-position: 200% 50%; }
+  to { background-position: -200% 50%; }
 }
 
 @keyframes float-slow {
@@ -161,12 +161,22 @@ html {
   background-image: var(--earth-texture);
   background-size: 200% 100%;
   background-repeat: repeat;
-  animation: earth-spin 60s linear infinite;
+  animation: earth-spin 60s linear infinite, float-slow 8s ease-in-out infinite;
   box-shadow:
     inset -30px -40px 80px rgba(0, 10, 30, 0.55),
     inset 25px 30px 70px rgba(120, 200, 255, 0.25),
     0 0 80px 10px rgba(80, 180, 220, 0.35),
     0 0 180px 40px rgba(40, 120, 180, 0.25);
+}
+
+@keyframes hero-fade-up {
+  0% { opacity: 0; transform: translateY(18px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-hero {
+  opacity: 0;
+  animation: hero-fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .earth-atmosphere {
