@@ -21,7 +21,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "MuchBetterWorld delivers business analysis, consulting, and website development that turn strategy into measurable results.",
+          "MuchBetter delivers business analysis, consulting, and website development that turn strategy into measurable results.",
       },
       { property: "og:title", content: "MuchBetterWorld — Better solutions. Much better World." },
       {
