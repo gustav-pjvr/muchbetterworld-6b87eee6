@@ -1,0 +1,7 @@
+# MuchBetter
+
+> MuchBetter helps organizations identify opportunities, solve operational challenges, and implement digital solutions through business analysis, consulting, and modern website development.
+
+## Pages
+
+- [Home](/): Overview of MuchBetter's services, process, and contact information.

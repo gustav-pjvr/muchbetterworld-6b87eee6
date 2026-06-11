@@ -21,13 +21,57 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "MuchBetter delivers business analysis, consulting, and website development that turn strategy into measurable results.",
+          "MuchBetter delivers business analysis, consulting, and website development that turn strategy into measurable results for growing organizations.",
       },
       { property: "og:title", content: "MuchBetter — Better solutions. Much better World." },
       {
         property: "og:description",
         content:
-          "Business analysis, consulting, and website development under one expert roof.",
+          "MuchBetter delivers business analysis, consulting, and website development that turn strategy into measurable results for growing organizations.",
+      },
+      { property: "og:url", content: "https://muchbetterworld.lovable.app/" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://muchbetterworld.lovable.app/" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "MuchBetter",
+          url: "https://muchbetterworld.lovable.app/",
+          description:
+            "MuchBetter helps organizations identify opportunities, solve operational challenges, and ship modern digital solutions.",
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Service",
+          serviceType: "Business Analysis",
+          provider: { "@type": "Organization", name: "MuchBetter", url: "https://muchbetterworld.lovable.app/" },
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Service",
+          serviceType: "Business Consulting",
+          provider: { "@type": "Organization", name: "MuchBetter", url: "https://muchbetterworld.lovable.app/" },
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Service",
+          serviceType: "Website Development",
+          provider: { "@type": "Organization", name: "MuchBetter", url: "https://muchbetterworld.lovable.app/" },
+        }),
       },
     ],
   }),
