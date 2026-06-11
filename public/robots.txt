@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://muchbetterworld.lovable.app/sitemap.xml
