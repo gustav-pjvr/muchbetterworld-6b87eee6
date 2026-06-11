@@ -81,7 +81,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "MuchBetter offers business analysis, consulting, and website development services." },
       { name: "author", content: "Lovable" },
       { property: "og:title", content: "Much Better" },
-      { property: "og:description", content: "MuchBetterWorld offers business analysis, consulting, and website development services." },
+      { property: "og:description", content: "MuchBetter offers business analysis, consulting, and website development services." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
