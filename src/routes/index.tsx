@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SpinningEarth } from "@/components/site/SpinningEarth";
+import { CodeStreams } from "@/components/site/CodeStreams";
 import {
   About,
   Services,
@@ -42,6 +43,7 @@ function Hero() {
       className="relative isolate min-h-screen flex items-center justify-center overflow-hidden bg-background"
     >
       <SpinningEarth />
+      <CodeStreams />
       <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/30 to-background pointer-events-none" />
       <div className="relative z-10 mx-auto max-w-5xl px-6 py-32 text-center animate-fade-in">
         <p className="text-sm font-semibold uppercase tracking-[0.25em] text-accent">
