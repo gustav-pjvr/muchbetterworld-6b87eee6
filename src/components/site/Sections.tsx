@@ -55,7 +55,7 @@ export function About() {
         <SectionHeading
           eyebrow="About"
           title="Building Better Businesses Through Better Solutions"
-          intro="MuchBetterWorld helps organizations identify opportunities, solve operational challenges, and implement digital solutions that create measurable results."
+          intro="MuchBetter helps organizations identify opportunities, solve operational challenges, and implement digital solutions that create measurable results."
         />
         <div className="mx-auto max-w-4xl space-y-6 text-lg leading-relaxed text-muted-foreground">
           <p>
@@ -206,7 +206,7 @@ export function WhyUs() {
         <div className="mx-auto max-w-3xl text-center mb-14">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">Why us</p>
           <h2 className="mt-3 text-3xl md:text-5xl font-semibold tracking-tight">
-            Why Choose MuchBetterWorld?
+            Why Choose MuchBetter?
           </h2>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -239,13 +239,13 @@ export function Contact() {
       <div className="mx-auto max-w-3xl px-6">
         <SectionHeading
           eyebrow="Contact"
-          title="Let's Build Something Better"
+          title="Lets make something better, much better."
           intro="Ready to improve your business, optimize operations, or create a stronger online presence?"
         />
         <div className="mb-10 text-center">
           <h3 className="text-xl font-semibold text-foreground">Get In Touch</h3>
           <div className="mt-4 flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm text-muted-foreground">
-            <a href="mailto:hello@muchbetterworld.com" className="hover:text-foreground">Email: hello@muchbetterworld.com</a>
+            <a href="mailto:hello@muchbetter.world" className="hover:text-foreground">Email: hello@muchbetter.world</a>
             <span>Phone: +27 XX XXX XXXX</span>
             <span>Location: South Africa</span>
           </div>
@@ -307,7 +307,7 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-border bg-background py-10">
       <div className="mx-auto max-w-7xl px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-        <p>© {new Date().getFullYear()} MuchBetterWorld. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} MuchBetter. All rights reserved.</p>
         <p>Better solutions. Much better World.</p>
       </div>
     </footer>
