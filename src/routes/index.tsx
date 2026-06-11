@@ -17,7 +17,7 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "MuchBetterWorld — Better solutions. Much better World." },
+      { title: "MuchBetter — Better solutions. Much better World." },
       {
         name: "description",
         content:
