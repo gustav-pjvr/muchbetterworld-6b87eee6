@@ -206,7 +206,7 @@ export function WhyUs() {
         <div className="mx-auto max-w-3xl text-center mb-14">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">Why us</p>
           <h2 className="mt-3 text-3xl md:text-5xl font-semibold tracking-tight">
-            Why Choose MuchBetterWorld?
+            Why Choose MuchBetter?
           </h2>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
