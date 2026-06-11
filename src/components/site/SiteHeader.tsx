@@ -23,19 +23,29 @@ export function SiteHeader() {
   }, []);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) setActive(e.target.id);
-        });
-      },
-      { rootMargin: "-40% 0px -55% 0px", threshold: 0 },
-    );
-    NAV.forEach((n) => {
-      const el = document.getElementById(n.id);
-      if (el) observer.observe(el);
-    });
-    return () => observer.disconnect();
+    const onScroll = () => {
+      const probe = window.scrollY + window.innerHeight * 0.35;
+      // If still in the hero area, clear active
+      const hero = document.getElementById("top");
+      const heroBottom = hero ? hero.offsetTop + hero.offsetHeight : 0;
+      if (window.scrollY + 80 < heroBottom) {
+        setActive("");
+        return;
+      }
+      let current = "";
+      for (const n of NAV) {
+        const el = document.getElementById(n.id);
+        if (el && el.offsetTop <= probe) current = n.id;
+      }
+      setActive(current);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
 
   const handleClick = (id: string) => (e: React.MouseEvent) => {
