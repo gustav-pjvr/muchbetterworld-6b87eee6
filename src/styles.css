@@ -62,21 +62,21 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
+  --radius: 0.75rem;
+  --background: oklch(0.99 0.005 220);
+  --foreground: oklch(0.18 0.04 230);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
+  --card-foreground: oklch(0.18 0.04 230);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
+  --popover-foreground: oklch(0.18 0.04 230);
+  --primary: oklch(0.38 0.12 220);
+  --primary-foreground: oklch(0.99 0.005 220);
+  --secondary: oklch(0.96 0.015 210);
+  --secondary-foreground: oklch(0.25 0.06 230);
+  --muted: oklch(0.96 0.015 210);
+  --muted-foreground: oklch(0.5 0.03 230);
+  --accent: oklch(0.72 0.13 185);
+  --accent-foreground: oklch(0.15 0.05 230);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
   --border: oklch(0.929 0.013 255.508);
@@ -141,4 +141,39 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
   }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@keyframes earth-spin {
+  from { background-position: 0% 50%; }
+  to { background-position: 200% 50%; }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+.earth-sphere {
+  background-image: var(--earth-texture);
+  background-size: 200% 100%;
+  background-repeat: repeat;
+  animation: earth-spin 60s linear infinite;
+  box-shadow:
+    inset -30px -40px 80px rgba(0, 10, 30, 0.55),
+    inset 25px 30px 70px rgba(120, 200, 255, 0.25),
+    0 0 80px 10px rgba(80, 180, 220, 0.35),
+    0 0 180px 40px rgba(40, 120, 180, 0.25);
+}
+
+.earth-atmosphere {
+  background: radial-gradient(circle, rgba(120, 200, 255, 0.18) 40%, rgba(80, 180, 220, 0.08) 70%, transparent 80%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .earth-sphere { animation: none; }
+  html { scroll-behavior: auto; }
 }
