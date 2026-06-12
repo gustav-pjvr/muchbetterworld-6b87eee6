@@ -77,6 +77,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "google-site-verification", content: "qk6_cRGvPdbGxYbdLD8YYVYzDTfEwJ2JglOTFw7Yqkc" },
       { title: "MuchBetter — Business analysis, consulting & web development" },
       { name: "description", content: "MuchBetter helps organizations identify opportunities, solve operational challenges, and ship modern websites that drive measurable business results." },
       { name: "author", content: "MuchBetter" },
