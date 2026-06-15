@@ -243,6 +243,7 @@ export type Database = {
           read_ct: number
         }[]
       }
+      requeue_from_dlq: { Args: { p_message_id: string }; Returns: string }
     }
     Enums: {
       [_ in never]: never
