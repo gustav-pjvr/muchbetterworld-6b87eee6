@@ -151,6 +151,7 @@ function AdminContent({ email }: { email: string }) {
     const { data, error } = await supabase
       .from("client_sites")
       .select("*")
+      .order("display_order", { ascending: true })
       .order("created_at", { ascending: false });
     if (error) toast.error(error.message);
     setSites((data as ClientSite[]) ?? []);
