@@ -184,6 +184,29 @@ function AdminContent({ email }: { email: string }) {
     }
   };
 
+  const handleMove = async (id: string, direction: "up" | "down") => {
+    const idx = sites.findIndex((s) => s.id === id);
+    if (idx === -1) return;
+    const swapIdx = direction === "up" ? idx - 1 : idx + 1;
+    if (swapIdx < 0 || swapIdx >= sites.length) return;
+    const a = sites[idx];
+    const b = sites[swapIdx];
+    const { error: errA } = await supabase
+      .from("client_sites")
+      .update({ display_order: b.display_order })
+      .eq("id", a.id);
+    const { error: errB } = await supabase
+      .from("client_sites")
+      .update({ display_order: a.display_order })
+      .eq("id", b.id);
+    if (errA || errB) {
+      toast.error(errA?.message || errB?.message || "Reorder failed");
+      return;
+    }
+    toast.success(direction === "up" ? "Moved up" : "Moved down");
+    load();
+  };
+
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !url.trim()) return;
