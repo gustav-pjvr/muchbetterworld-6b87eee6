@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      client_sites: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          url?: string
+        }
+        Relationships: []
+      }
       conversations: {
         Row: {
           company: string | null
@@ -52,7 +76,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin_email: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
