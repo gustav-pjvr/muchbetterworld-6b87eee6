@@ -190,12 +190,20 @@ function AdminContent({ email }: { email: string }) {
     let finalUrl = url.trim();
     if (!/^https?:\/\//i.test(finalUrl)) finalUrl = "https://" + finalUrl;
     setSaving(true);
+    const { data: maxRow } = await supabase
+      .from("client_sites")
+      .select("display_order")
+      .order("display_order", { ascending: false })
+      .limit(1)
+      .single();
+    const nextOrder = (maxRow?.display_order ?? -1) + 1;
     const { data: inserted, error } = await supabase
       .from("client_sites")
       .insert({
         name: name.trim(),
         url: finalUrl,
         description: description.trim() || null,
+        display_order: nextOrder,
       })
       .select("id")
       .single();
