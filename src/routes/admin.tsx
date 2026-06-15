@@ -4,6 +4,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { capturePreview } from "@/lib/client-sites.functions";
+import { getActiveTheme, setActiveTheme } from "@/lib/site-settings.functions";
+import { THEMES, type ThemeId, isThemeId } from "@/lib/theme";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,7 +14,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
-import { Loader2, Trash2, LogOut, RefreshCw } from "lucide-react";
+import { Loader2, Trash2, LogOut, RefreshCw, Check } from "lucide-react";
 
 const ADMIN_EMAILS = ["gustavpjvr@gmail.com", "jacojvr@gmail.com"];
 
