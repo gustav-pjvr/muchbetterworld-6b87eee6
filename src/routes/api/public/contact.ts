@@ -62,7 +62,7 @@ export const Route = createFileRoute("/api/public/contact")({
             email: data.email,
             phone: data.phone || null,
             project_type: data.projectType || null,
-            message: data.message,
+            message: data.message || null,
           })
           .select("id, created_at")
           .single();
