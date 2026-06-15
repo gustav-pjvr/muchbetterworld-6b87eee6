@@ -27,6 +27,17 @@ export function ClientShowcaseButton() {
   const [selected, setSelected] = useState<ClientSite | null>(null);
 
   useEffect(() => {
+    supabase
+      .from("client_sites")
+      .select("id,name,url,description,preview_url,preview_status")
+      .order("created_at", { ascending: false })
+      .then(({ data, error }) => {
+        if (error) toast.error("Couldn't load clients");
+        setSites((data as ClientSite[]) ?? []);
+      });
+  }, []);
+
+  useEffect(() => {
     if (!open) return;
     setLoading(true);
     supabase
@@ -39,6 +50,8 @@ export function ClientShowcaseButton() {
         setLoading(false);
       });
   }, [open]);
+
+  if (sites.length === 0) return null;
 
   return (
     <>
