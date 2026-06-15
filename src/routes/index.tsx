@@ -98,8 +98,7 @@ function Hero() {
           MuchBetter
         </p>
         <h1
-          className="animate-hero mt-6 text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tight text-foreground leading-[1.05]"
-          style={{ animationDelay: "120ms" }}
+          className="mt-6 text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tight text-foreground leading-[1.05]"
         >
           Better solutions.
           <br />
