@@ -65,6 +65,7 @@ function AdminPage() {
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     setEmail(null);
+    navigate({ to: "/" });
   };
 
   if (checking) {
