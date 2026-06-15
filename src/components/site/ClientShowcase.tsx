@@ -18,6 +18,7 @@ type ClientSite = {
   description: string | null;
   preview_url: string | null;
   preview_status: string;
+  display_order: number;
 };
 
 export function ClientShowcaseButton() {
