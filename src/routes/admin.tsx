@@ -573,6 +573,7 @@ function EmailDashboard() {
                 <th className="text-left p-3 font-medium">Recipient</th>
                 <th className="text-left p-3 font-medium">Status</th>
                 <th className="text-left p-3 font-medium">When</th>
+                <th className="text-right p-3 font-medium w-px"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
