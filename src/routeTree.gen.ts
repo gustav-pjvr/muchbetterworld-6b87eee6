@@ -13,6 +13,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiPublicContactRouteImport } from './routes/api/public/contact'
+import { Route as ApiPublicPreviewIdRouteImport } from './routes/api/public/preview.$id'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -34,18 +35,25 @@ const ApiPublicContactRoute = ApiPublicContactRouteImport.update({
   path: '/api/public/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPreviewIdRoute = ApiPublicPreviewIdRouteImport.update({
+  id: '/api/public/preview/$id',
+  path: '/api/public/preview/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/preview/$id': typeof ApiPublicPreviewIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/preview/$id': typeof ApiPublicPreviewIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,30 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/public/contact': typeof ApiPublicContactRoute
+  '/api/public/preview/$id': typeof ApiPublicPreviewIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/sitemap.xml' | '/api/public/contact'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/sitemap.xml'
+    | '/api/public/contact'
+    | '/api/public/preview/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/sitemap.xml' | '/api/public/contact'
-  id: '__root__' | '/' | '/admin' | '/sitemap.xml' | '/api/public/contact'
+  to:
+    | '/'
+    | '/admin'
+    | '/sitemap.xml'
+    | '/api/public/contact'
+    | '/api/public/preview/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/sitemap.xml'
+    | '/api/public/contact'
+    | '/api/public/preview/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +92,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiPublicContactRoute: typeof ApiPublicContactRoute
+  ApiPublicPreviewIdRoute: typeof ApiPublicPreviewIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -99,6 +125,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/preview/$id': {
+      id: '/api/public/preview/$id'
+      path: '/api/public/preview/$id'
+      fullPath: '/api/public/preview/$id'
+      preLoaderRoute: typeof ApiPublicPreviewIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -107,6 +140,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiPublicContactRoute: ApiPublicContactRoute,
+  ApiPublicPreviewIdRoute: ApiPublicPreviewIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

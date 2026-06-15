@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
+import { capturePreview } from "@/lib/client-sites.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
-import { Loader2, Trash2, LogOut } from "lucide-react";
+import { Loader2, Trash2, LogOut, RefreshCw } from "lucide-react";
 
 const ADMIN_EMAILS = ["gustavpjvr@gmail.com", "jacojvr@gmail.com"];
 
@@ -19,6 +22,10 @@ type ClientSite = {
   url: string;
   description: string | null;
   created_at: string;
+  preview_url: string | null;
+  preview_status: string;
+  preview_error: string | null;
+  preview_updated_at: string | null;
 };
 
 export const Route = createFileRoute("/admin")({
@@ -114,6 +121,8 @@ function AdminContent({ email }: { email: string }) {
   const [url, setUrl] = useState("");
   const [description, setDescription] = useState("");
   const [saving, setSaving] = useState(false);
+  const [capturing, setCapturing] = useState<Record<string, boolean>>({});
+  const captureFn = useServerFn(capturePreview);
 
   const load = async () => {
     setLoading(true);
@@ -130,27 +139,55 @@ function AdminContent({ email }: { email: string }) {
     load();
   }, []);
 
+  // Poll while any site is pending
+  useEffect(() => {
+    const anyPending = sites.some((s) => s.preview_status === "pending");
+    if (!anyPending) return;
+    const t = setInterval(load, 3000);
+    return () => clearInterval(t);
+  }, [sites]);
+
+  const runCapture = async (siteId: string) => {
+    setCapturing((c) => ({ ...c, [siteId]: true }));
+    try {
+      const r = await captureFn({ data: { siteId } });
+      if (r.ok) toast.success("Preview saved");
+      else toast.error(r.error || "Preview failed");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Preview failed");
+    } finally {
+      setCapturing((c) => ({ ...c, [siteId]: false }));
+      load();
+    }
+  };
+
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !url.trim()) return;
     let finalUrl = url.trim();
     if (!/^https?:\/\//i.test(finalUrl)) finalUrl = "https://" + finalUrl;
     setSaving(true);
-    const { error } = await supabase.from("client_sites").insert({
-      name: name.trim(),
-      url: finalUrl,
-      description: description.trim() || null,
-    });
+    const { data: inserted, error } = await supabase
+      .from("client_sites")
+      .insert({
+        name: name.trim(),
+        url: finalUrl,
+        description: description.trim() || null,
+      })
+      .select("id")
+      .single();
     setSaving(false);
-    if (error) {
-      toast.error(error.message);
+    if (error || !inserted) {
+      toast.error(error?.message || "Failed");
       return;
     }
     setName("");
     setUrl("");
     setDescription("");
-    toast.success("Client added");
-    load();
+    toast.success("Client added — capturing preview…");
+    await load();
+    // Kick off capture in background
+    runCapture(inserted.id);
   };
 
   const handleDelete = async (id: string) => {
@@ -198,21 +235,59 @@ function AdminContent({ email }: { email: string }) {
           <p className="text-sm text-muted-foreground">No client sites yet.</p>
         ) : (
           <ul className="divide-y divide-border">
-            {sites.map((s) => (
-              <li key={s.id} className="py-3 flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <div className="font-medium truncate">{s.name}</div>
-                  <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-xs text-accent hover:underline truncate block">{s.url}</a>
-                  {s.description && <div className="mt-1 text-sm text-muted-foreground">{s.description}</div>}
-                </div>
-                <Button variant="ghost" size="icon" onClick={() => handleDelete(s.id)} aria-label="Delete">
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </li>
-            ))}
+            {sites.map((s) => {
+              const busy = capturing[s.id] || s.preview_status === "pending";
+              return (
+                <li key={s.id} className="py-4 flex items-start gap-3">
+                  <div className="w-24 h-16 shrink-0 rounded border border-border bg-secondary/40 overflow-hidden flex items-center justify-center">
+                    {s.preview_url && s.preview_status === "ready" ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={s.preview_url} alt="" className="w-full h-full object-cover" />
+                    ) : busy ? (
+                      <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                    ) : (
+                      <span className="text-[10px] text-muted-foreground">no preview</span>
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-medium truncate">{s.name}</span>
+                      <PreviewBadge status={busy ? "pending" : s.preview_status} />
+                    </div>
+                    <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-xs text-accent hover:underline truncate block">{s.url}</a>
+                    {s.description && <div className="mt-1 text-sm text-muted-foreground">{s.description}</div>}
+                    {s.preview_status === "failed" && s.preview_error && (
+                      <div className="mt-1 text-xs text-destructive">{s.preview_error}</div>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => runCapture(s.id)}
+                      disabled={busy}
+                      aria-label="Re-scrape preview"
+                      title="Re-scrape preview"
+                    >
+                      <RefreshCw className={`h-4 w-4 ${busy ? "animate-spin" : ""}`} />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => handleDelete(s.id)} aria-label="Delete">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         )}
       </Card>
     </div>
   );
+}
+
+function PreviewBadge({ status }: { status: string }) {
+  if (status === "ready") return <Badge variant="secondary" className="text-xs">Preview ready</Badge>;
+  if (status === "pending") return <Badge variant="outline" className="text-xs gap-1"><Loader2 className="h-3 w-3 animate-spin" /> Capturing</Badge>;
+  if (status === "failed") return <Badge variant="destructive" className="text-xs">Failed</Badge>;
+  return <Badge variant="outline" className="text-xs">No preview</Badge>;
 }
