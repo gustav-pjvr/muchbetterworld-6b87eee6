@@ -14,7 +14,7 @@ export const getActiveTheme = createServerFn({ method: "GET" }).handler(
       const { data } = await supabaseAdmin
         .from("site_settings")
         .select("theme")
-        .eq("id", true)
+        .eq("id", 1)
         .maybeSingle();
       const theme = data?.theme;
       return { theme: isThemeId(theme) ? theme : "default" };
@@ -41,7 +41,7 @@ export const setActiveTheme = createServerFn({ method: "POST" })
     );
     const { error } = await supabaseAdmin
       .from("site_settings")
-      .upsert({ id: true, theme: data.theme, updated_at: new Date().toISOString() });
+      .upsert({ id: 1, theme: data.theme, updated_at: new Date().toISOString() });
     if (error) throw new Error(error.message);
     return { ok: true };
   });
