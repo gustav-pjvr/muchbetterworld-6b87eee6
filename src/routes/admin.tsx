@@ -300,11 +300,10 @@ function PreviewBadge({ status }: { status: string }) {
 
 const THEME_SWATCHES: Record<ThemeId, string[]> = {
   default: ["#0a2540", "#1b4965", "#2a9d8f", "#e0fbfc"],
-  ocean: ["#0c2340", "#1a4a6e", "#2d8a9e", "#5cbdb9"],
-  sunset: ["#ff6b35", "#f7931e", "#e84393", "#fef0e0"],
-  forest: ["#1a3c2a", "#2d5a3d", "#5a8a5c", "#dce5d4"],
-  midnight: ["#0f0a2e", "#1e1546", "#7c3aed", "#c4b5fd"],
-  rose: ["#5c0a1a", "#a91e3a", "#e85d75", "#fde2e6"],
+  bert: ["#0B0C10", "#1F2833", "#45A29E", "#66FCF1"],
+  desert: ["#1E2640", "#DC9750", "#E8B884", "#F5EBDD"],
+  pieces: ["#1A1A1D", "#4E4E50", "#950740", "#C3073F"],
+  curve: ["#2A2420", "#567257", "#896A58", "#D9D8D5"],
 };
 
 function ThemePicker() {
