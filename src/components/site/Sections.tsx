@@ -55,7 +55,7 @@ export function About() {
         <SectionHeading
           eyebrow="About"
           title="Building Better Businesses Through Better Solutions"
-          intro="MuchBetter helps organizations identify opportunities, solve operational challenges, and implement digital solutions that create measurable results."
+          intro="MuchBetter helps organizations identify opportunities, solve operational challenges, and implement digital solutions."
         />
         <div className="mx-auto max-w-4xl space-y-6 text-lg leading-relaxed text-muted-foreground">
           <p>
@@ -67,21 +67,14 @@ export function About() {
             efficiency, we work closely with your team to transform ideas into practical outcomes.
           </p>
         </div>
-        <div className="mt-14 grid gap-6 md:grid-cols-2">
-          <Card className="p-8 border-border">
-            <Target className="h-7 w-7 text-accent" />
-            <h3 className="mt-5 text-2xl font-semibold text-foreground">Our Mission</h3>
-            <p className="mt-3 leading-relaxed text-muted-foreground">
-              To help organizations make smarter decisions, embrace innovation, and create
-              sustainable growth through technology and strategic thinking.
-            </p>
-          </Card>
-          <Card className="p-8 border-border">
-            <Eye className="h-7 w-7 text-accent" />
+        <div className="mt-14 mx-auto max-w-3xl">
+          <Card className="p-10 border-border text-center">
+            <Eye className="h-7 w-7 text-accent mx-auto" />
             <h3 className="mt-5 text-2xl font-semibold text-foreground">Our Vision</h3>
             <p className="mt-3 leading-relaxed text-muted-foreground">
-              A world where every business has access to the tools, insights, and digital
-              solutions needed to reach its full potential.
+              Making your business better. Much Better. We exist to give every organization
+              the clarity, tools, and digital craftsmanship needed to reach its full potential
+              and create lasting, meaningful growth.
             </p>
           </Card>
         </div>
