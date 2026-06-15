@@ -225,14 +225,38 @@ export function WhyUs() {
 
 export function Contact() {
   const [sending, setSending] = useState(false);
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const form = e.currentTarget;
+    const fd = new FormData(form);
+    const payload = {
+      name: String(fd.get("name") ?? "").trim(),
+      company: String(fd.get("company") ?? "").trim(),
+      email: String(fd.get("email") ?? "").trim(),
+      phone: String(fd.get("phone") ?? "").trim(),
+      projectType: String(fd.get("projectType") ?? "").trim(),
+      message: String(fd.get("message") ?? "").trim(),
+    };
+    if (!payload.name || !payload.email || !payload.message) {
+      toast.error("Please fill in your name, email, and message.");
+      return;
+    }
     setSending(true);
-    setTimeout(() => {
-      setSending(false);
-      (e.target as HTMLFormElement).reset();
+    try {
+      const res = await fetch("/api/public/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      form.reset();
       toast.success("Thanks! We'll be in touch shortly.");
-    }, 600);
+    } catch (err) {
+      console.error(err);
+      toast.error("Something went wrong. Please try again or email us directly.");
+    } finally {
+      setSending(false);
+    }
   };
   return (
     <section id="contact" className="scroll-mt-24 py-24 md:py-32 bg-background">
