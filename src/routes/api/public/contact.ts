@@ -2,12 +2,27 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 
 const ContactSchema = z.object({
-  name: z.string().trim().min(1).max(120),
-  company: z.string().trim().max(120).optional().or(z.literal("")),
+  name: z
+    .string()
+    .trim()
+    .min(2)
+    .max(120)
+    .regex(/^[\p{L}\p{M}'’\-.\s]+$/u),
+  company: z.string().trim().min(1).max(120),
   email: z.string().trim().email().max(255),
-  phone: z.string().trim().max(40).optional().or(z.literal("")),
-  projectType: z.string().trim().max(60).optional().or(z.literal("")),
-  message: z.string().trim().min(1).max(4000),
+  phone: z
+    .string()
+    .trim()
+    .min(1)
+    .max(40)
+    .regex(/^\+?[0-9\s().\-]{7,}$/),
+  projectType: z.enum([
+    "business-analysis",
+    "consulting",
+    "website-development",
+    "custom-solution",
+  ]),
+  message: z.string().trim().max(4000).optional().or(z.literal("")),
 });
 
 // Address that receives signup-notification emails.
@@ -47,7 +62,7 @@ export const Route = createFileRoute("/api/public/contact")({
             email: data.email,
             phone: data.phone || null,
             project_type: data.projectType || null,
-            message: data.message,
+            message: data.message || "",
           })
           .select("id, created_at")
           .single();
