@@ -91,38 +91,23 @@ export const Route = createFileRoute("/api/public/contact")({
           }
         };
 
-        await Promise.all([
-          sendEmail(
-            {
-              templateName: "signup-notification",
-              recipientEmail: NOTIFICATION_RECIPIENT,
-              idempotencyKey: `signup-notification-${inserted.id}`,
-              templateData: {
-                name: data.name,
-                email: data.email,
-                company: data.company || null,
-                phone: data.phone || null,
-                projectType: data.projectType || null,
-                message: data.message,
-                submittedAt: inserted.created_at,
-              },
+        await sendEmail(
+          {
+            templateName: "signup-notification",
+            recipientEmail: NOTIFICATION_RECIPIENT,
+            idempotencyKey: `signup-notification-${inserted.id}`,
+            templateData: {
+              name: data.name,
+              email: data.email,
+              company: data.company || null,
+              phone: data.phone || null,
+              projectType: data.projectType || null,
+              message: data.message,
+              submittedAt: inserted.created_at,
             },
-            "admin notification",
-          ),
-          sendEmail(
-            {
-              templateName: "contact-confirmation",
-              recipientEmail: data.email,
-              idempotencyKey: `contact-confirmation-${inserted.id}`,
-              templateData: {
-                name: data.name,
-                message: data.message,
-                projectType: data.projectType || null,
-              },
-            },
-            "user confirmation",
-          ),
-        ]);
+          },
+          "admin notification",
+        );
 
         return Response.json({ ok: true });
       },
