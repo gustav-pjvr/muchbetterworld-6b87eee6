@@ -16,7 +16,7 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { Loader2, Trash2, LogOut, RefreshCw, Check, Mail } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { getEmailDashboard, type EmailDashboardData } from "@/lib/email-admin.functions";
+import { getEmailDashboard, retryFailedEmail, type EmailDashboardData } from "@/lib/email-admin.functions";
 
 const ADMIN_EMAILS = ["gustavpjvr@gmail.com", "jacojvr@gmail.com"];
 
@@ -427,6 +427,7 @@ function StatusBadge({ status }: { status: string }) {
 
 function EmailDashboard() {
   const fetchFn = useServerFn(getEmailDashboard);
+  const retryFn = useServerFn(retryFailedEmail);
   const [range, setRange] = useState<"24h" | "7d" | "30d" | "custom">("7d");
   const [customFrom, setCustomFrom] = useState<string>(() =>
     new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
@@ -435,6 +436,7 @@ function EmailDashboard() {
   const [template, setTemplate] = useState<string>("__all__");
   const [status, setStatus] = useState<string>("__all__");
   const [data, setData] = useState<EmailDashboardData | null>(null);
+  const [retrying, setRetrying] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -581,21 +583,55 @@ function EmailDashboard() {
               ) : !data || data.rows.length === 0 ? (
                 <tr><td colSpan={4} className="p-6 text-center text-sm text-muted-foreground">No emails in this range.</td></tr>
               ) : (
-                data.rows.map((r) => (
-                  <tr key={r.id} className="hover:bg-secondary/30">
-                    <td className="p-3 font-medium">{r.template_name}</td>
-                    <td className="p-3 text-muted-foreground truncate max-w-[220px]" title={r.recipient_email}>{r.recipient_email}</td>
-                    <td className="p-3">
-                      <div className="flex flex-col gap-1">
-                        <StatusBadge status={r.status} />
-                        {r.error_message && (r.status === "dlq" || r.status === "failed" || r.status === "bounced") && (
-                          <span className="text-xs text-destructive truncate max-w-[260px]" title={r.error_message}>{r.error_message}</span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="p-3 text-muted-foreground whitespace-nowrap">{fmtTime(r.created_at)}</td>
-                  </tr>
-                ))
+                data.rows.map((r) => {
+                  const isFailed = r.status === "dlq" || r.status === "failed" || r.status === "bounced";
+                  const canRetry = isFailed && !!r.message_id;
+                  const busy = !!(r.message_id && retrying[r.message_id]);
+                  const handleRetry = async () => {
+                    if (!r.message_id) return;
+                    setRetrying((m) => ({ ...m, [r.message_id!]: true }));
+                    try {
+                      const res = await retryFn({ data: { messageId: r.message_id } });
+                      if (res.ok) toast.success(`Re-queued for delivery (${res.queue})`);
+                      else toast.error(res.reason || "Could not retry");
+                    } catch (e) {
+                      toast.error(e instanceof Error ? e.message : "Retry failed");
+                    } finally {
+                      setRetrying((m) => ({ ...m, [r.message_id!]: false }));
+                      load();
+                    }
+                  };
+                  return (
+                    <tr key={r.id} className="hover:bg-secondary/30">
+                      <td className="p-3 font-medium">{r.template_name}</td>
+                      <td className="p-3 text-muted-foreground truncate max-w-[220px]" title={r.recipient_email}>{r.recipient_email}</td>
+                      <td className="p-3">
+                        <div className="flex flex-col gap-1">
+                          <StatusBadge status={r.status} />
+                          {r.error_message && isFailed && (
+                            <span className="text-xs text-destructive truncate max-w-[260px]" title={r.error_message}>{r.error_message}</span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="p-3 text-muted-foreground whitespace-nowrap">{fmtTime(r.created_at)}</td>
+                      <td className="p-3">
+                        {canRetry ? (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={handleRetry}
+                            disabled={busy}
+                            className="gap-1 h-8"
+                            title={r.status === "bounced" ? "Bounced addresses rarely succeed on retry" : "Re-queue this email for delivery"}
+                          >
+                            <RefreshCw className={`h-3.5 w-3.5 ${busy ? "animate-spin" : ""}`} />
+                            {busy ? "Retrying…" : "Retry"}
+                          </Button>
+                        ) : null}
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>
