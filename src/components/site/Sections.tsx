@@ -308,6 +308,24 @@ export function Contact() {
           </form>
         </Card>
       </div>
+      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <div className="mx-auto mb-2 inline-flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+              <CheckCircle2 className="h-8 w-8 text-primary" />
+            </div>
+            <DialogTitle className="text-center text-2xl">Message received</DialogTitle>
+            <DialogDescription className="text-center pt-2">
+              {submittedName ? `Thanks, ${submittedName}!` : "Thanks!"} We&apos;ve received your
+              message and a confirmation has been sent to your inbox. Gustav will be in touch
+              shortly at gustav@muchbetter.world or +27 67 833 7199.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="sm:justify-center">
+            <Button onClick={() => setConfirmOpen(false)} size="lg">Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
