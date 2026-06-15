@@ -208,6 +208,8 @@ function AdminContent({ email }: { email: string }) {
     <div className="space-y-8">
       <p className="text-sm text-muted-foreground">Signed in as <span className="font-medium text-foreground">{email}</span></p>
 
+      <ThemePicker />
+
       <Card className="p-6">
         <h2 className="text-lg font-semibold mb-4">Add client site</h2>
         <form onSubmit={handleAdd} className="space-y-4">
