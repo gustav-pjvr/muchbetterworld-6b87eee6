@@ -99,3 +99,55 @@ export const getEmailDashboard = createServerFn({ method: "POST" })
     const limit = data.limit ?? 50;
     return { stats, rows: rows.slice(0, limit), templates };
   });
+
+const RetrySchema = z.object({
+  messageId: z.string().min(1).max(200),
+});
+
+export type RetryResult = { ok: boolean; queue: string | null; reason?: string };
+
+export const retryFailedEmail = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => RetrySchema.parse(d))
+  .handler(async ({ data, context }): Promise<RetryResult> => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // Confirm the latest status for this message is genuinely failed/dlq.
+    const { data: latest, error: lookupError } = await supabaseAdmin
+      .from("email_send_log")
+      .select("status, template_name, recipient_email")
+      .eq("message_id", data.messageId)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (lookupError) return { ok: false, queue: null, reason: lookupError.message };
+    if (!latest) return { ok: false, queue: null, reason: "Unknown email" };
+    const s = latest.status;
+    if (s !== "dlq" && s !== "failed" && s !== "bounced") {
+      return { ok: false, queue: null, reason: `Cannot retry — current status is "${s}"` };
+    }
+
+    const { data: queueName, error: rpcError } = await supabaseAdmin.rpc(
+      "requeue_from_dlq",
+      { p_message_id: data.messageId },
+    );
+    if (rpcError) return { ok: false, queue: null, reason: rpcError.message };
+    if (!queueName) {
+      return {
+        ok: false,
+        queue: null,
+        reason: "Original message no longer in the dead-letter queue (it may have already been retried).",
+      };
+    }
+
+    await supabaseAdmin.from("email_send_log").insert({
+      message_id: data.messageId,
+      template_name: latest.template_name,
+      recipient_email: latest.recipient_email,
+      status: "pending",
+      metadata: { retried_by: (context.claims as { email?: string } | undefined)?.email ?? null },
+    });
+
+    return { ok: true, queue: queueName as string };
+  });
