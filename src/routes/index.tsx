@@ -108,7 +108,7 @@ function Hero() {
           className="animate-hero mx-auto mt-8 max-w-2xl text-lg md:text-xl text-muted-foreground"
           style={{ animationDelay: "240ms" }}
         >
-          Business analysis, consulting, and website development — crafted to move
+          Business analysis, consulting, and website development crafted to move
           your organization forward, measurably.
         </p>
         <div
