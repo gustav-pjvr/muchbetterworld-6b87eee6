@@ -14,7 +14,9 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
-import { Loader2, Trash2, LogOut, RefreshCw, Check } from "lucide-react";
+import { Loader2, Trash2, LogOut, RefreshCw, Check, Mail } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { getEmailDashboard, type EmailDashboardData } from "@/lib/email-admin.functions";
 
 const ADMIN_EMAILS = ["gustavpjvr@gmail.com", "jacojvr@gmail.com"];
 
@@ -224,6 +226,8 @@ function AdminContent({ email }: { email: string }) {
       <p className="text-sm text-muted-foreground">Signed in as <span className="font-medium text-foreground">{email}</span></p>
 
       <ThemePicker />
+
+      <EmailDashboard />
 
       <Card className="p-6">
         <h2 className="text-lg font-semibold mb-4">Add client site</h2>
