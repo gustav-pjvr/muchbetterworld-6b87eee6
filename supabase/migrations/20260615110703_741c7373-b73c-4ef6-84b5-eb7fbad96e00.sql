@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.is_admin_email() FROM anon, PUBLIC;
