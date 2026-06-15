@@ -14,7 +14,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
-import { Loader2, Trash2, LogOut, RefreshCw, Check, Mail } from "lucide-react";
+import { Loader2, Trash2, LogOut, RefreshCw, Check, Mail, ArrowUp, ArrowDown } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { getEmailDashboard, retryFailedEmail, type EmailDashboardData } from "@/lib/email-admin.functions";
 
@@ -30,6 +30,7 @@ type ClientSite = {
   preview_status: string;
   preview_error: string | null;
   preview_updated_at: string | null;
+  display_order: number;
 };
 
 export const Route = createFileRoute("/admin")({
@@ -150,6 +151,7 @@ function AdminContent({ email }: { email: string }) {
     const { data, error } = await supabase
       .from("client_sites")
       .select("*")
+      .order("display_order", { ascending: true })
       .order("created_at", { ascending: false });
     if (error) toast.error(error.message);
     setSites((data as ClientSite[]) ?? []);
@@ -182,18 +184,49 @@ function AdminContent({ email }: { email: string }) {
     }
   };
 
+  const handleMove = async (id: string, direction: "up" | "down") => {
+    const idx = sites.findIndex((s) => s.id === id);
+    if (idx === -1) return;
+    const swapIdx = direction === "up" ? idx - 1 : idx + 1;
+    if (swapIdx < 0 || swapIdx >= sites.length) return;
+    const a = sites[idx];
+    const b = sites[swapIdx];
+    const { error: errA } = await supabase
+      .from("client_sites")
+      .update({ display_order: b.display_order })
+      .eq("id", a.id);
+    const { error: errB } = await supabase
+      .from("client_sites")
+      .update({ display_order: a.display_order })
+      .eq("id", b.id);
+    if (errA || errB) {
+      toast.error(errA?.message || errB?.message || "Reorder failed");
+      return;
+    }
+    toast.success(direction === "up" ? "Moved up" : "Moved down");
+    load();
+  };
+
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !url.trim()) return;
     let finalUrl = url.trim();
     if (!/^https?:\/\//i.test(finalUrl)) finalUrl = "https://" + finalUrl;
     setSaving(true);
+    const { data: maxRow } = await supabase
+      .from("client_sites")
+      .select("display_order")
+      .order("display_order", { ascending: false })
+      .limit(1)
+      .single();
+    const nextOrder = (maxRow?.display_order ?? -1) + 1;
     const { data: inserted, error } = await supabase
       .from("client_sites")
       .insert({
         name: name.trim(),
         url: finalUrl,
         description: description.trim() || null,
+        display_order: nextOrder,
       })
       .select("id")
       .single();
@@ -286,6 +319,26 @@ function AdminContent({ email }: { email: string }) {
                     )}
                   </div>
                   <div className="flex flex-col gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleMove(s.id, "up")}
+                      disabled={sites.findIndex((x) => x.id === s.id) === 0}
+                      aria-label="Move up"
+                      title="Move up"
+                    >
+                      <ArrowUp className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleMove(s.id, "down")}
+                      disabled={sites.findIndex((x) => x.id === s.id) === sites.length - 1}
+                      aria-label="Move down"
+                      title="Move down"
+                    >
+                      <ArrowDown className="h-4 w-4" />
+                    </Button>
                     <Button
                       variant="ghost"
                       size="icon"

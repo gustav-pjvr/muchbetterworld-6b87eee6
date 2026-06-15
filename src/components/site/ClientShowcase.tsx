@@ -18,6 +18,7 @@ type ClientSite = {
   description: string | null;
   preview_url: string | null;
   preview_status: string;
+  display_order: number;
 };
 
 export function ClientShowcaseButton() {
@@ -30,6 +31,7 @@ export function ClientShowcaseButton() {
     supabase
       .from("client_sites")
       .select("id,name,url,description,preview_url,preview_status")
+      .order("display_order", { ascending: true })
       .order("created_at", { ascending: false })
       .then(({ data, error }) => {
         if (error) toast.error("Couldn't load clients");
@@ -43,6 +45,7 @@ export function ClientShowcaseButton() {
     supabase
       .from("client_sites")
       .select("id,name,url,description,preview_url,preview_status")
+      .order("display_order", { ascending: true })
       .order("created_at", { ascending: false })
       .then(({ data, error }) => {
         if (error) toast.error("Couldn't load clients");
