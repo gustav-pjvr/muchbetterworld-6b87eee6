@@ -13,6 +13,7 @@ import {
   Contact,
   SiteFooter,
 } from "@/components/site/Sections";
+import { ClientShowcaseButton } from "@/components/site/ClientShowcase";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -121,6 +122,7 @@ function Hero() {
           <Button size="lg" variant="outline" onClick={scrollTo("services")}>
             Explore services
           </Button>
+          <ClientShowcaseButton />
         </div>
       </div>
     </section>

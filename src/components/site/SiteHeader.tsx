@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, X, Globe2 } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -14,6 +15,9 @@ export function SiteHeader() {
   const [active, setActive] = useState<string>("");
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const navigate = useNavigate();
+  const clickCountRef = useRef(0);
+  const clickTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -54,6 +58,21 @@ export function SiteHeader() {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
+  const handleLogoClick = (e: React.MouseEvent) => {
+    clickCountRef.current += 1;
+    if (clickTimerRef.current) clearTimeout(clickTimerRef.current);
+    if (clickCountRef.current >= 3) {
+      e.preventDefault();
+      clickCountRef.current = 0;
+      navigate({ to: "/admin" });
+      return;
+    }
+    clickTimerRef.current = setTimeout(() => {
+      clickCountRef.current = 0;
+    }, 500);
+    handleClick("top")(e);
+  };
+
   return (
     <header
       className={cn(
@@ -66,12 +85,13 @@ export function SiteHeader() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <a
           href="#top"
-          onClick={handleClick("top")}
-          className="flex items-center gap-2 font-semibold tracking-tight text-foreground"
+          onClick={handleLogoClick}
+          className="flex items-center gap-2 font-semibold tracking-tight text-foreground select-none"
         >
           <Globe2 className="h-6 w-6 text-accent" />
           <span>MuchBetter</span>
         </a>
+
 
         <nav className="hidden md:flex items-center gap-1">
           {NAV.map((n) => (
