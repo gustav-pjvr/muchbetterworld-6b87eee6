@@ -22,7 +22,7 @@ import {
   ShieldCheck,
   Handshake,
   TrendingUp,
-  Target,
+  
   Eye,
   Wrench,
   Puzzle,
