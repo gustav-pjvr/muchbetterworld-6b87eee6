@@ -90,7 +90,6 @@ export function ClientShowcaseButton() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="font-medium text-foreground">{s.name}</div>
-                      <div className="text-xs text-muted-foreground truncate">{s.url}</div>
                       {s.description && (
                         <div className="mt-1 text-sm text-muted-foreground line-clamp-1">{s.description}</div>
                       )}
