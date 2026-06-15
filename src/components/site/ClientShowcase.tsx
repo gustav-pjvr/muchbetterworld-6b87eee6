@@ -81,7 +81,7 @@ export function ClientShowcaseButton() {
                 <li key={s.id}>
                   <button
                     onClick={() => setSelected(s)}
-                    className="w-full text-left py-3 px-2 rounded hover:bg-secondary transition-colors flex gap-3 items-center"
+                    className="w-full text-left py-3 px-2 rounded hover:bg-secondary transition-colors flex gap-3 items-center cursor-pointer"
                   >
                     <div className="w-20 h-14 shrink-0 rounded border border-border bg-secondary/40 overflow-hidden">
                       {s.preview_url && s.preview_status === "ready" ? (
