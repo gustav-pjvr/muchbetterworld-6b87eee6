@@ -11,6 +11,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   BarChart3,
@@ -22,7 +31,7 @@ import {
   ShieldCheck,
   Handshake,
   TrendingUp,
-  Target,
+  
   Eye,
   Wrench,
   Puzzle,
@@ -55,7 +64,7 @@ export function About() {
         <SectionHeading
           eyebrow="About"
           title="Building Better Businesses Through Better Solutions"
-          intro="MuchBetter helps organizations identify opportunities, solve operational challenges, and implement digital solutions that create measurable results."
+          intro="MuchBetter helps organizations identify opportunities, solve operational challenges, and implement digital solutions."
         />
         <div className="mx-auto max-w-4xl space-y-6 text-lg leading-relaxed text-muted-foreground">
           <p>
@@ -67,21 +76,14 @@ export function About() {
             efficiency, we work closely with your team to transform ideas into practical outcomes.
           </p>
         </div>
-        <div className="mt-14 grid gap-6 md:grid-cols-2">
-          <Card className="p-8 border-border">
-            <Target className="h-7 w-7 text-accent" />
-            <h3 className="mt-5 text-2xl font-semibold text-foreground">Our Mission</h3>
-            <p className="mt-3 leading-relaxed text-muted-foreground">
-              To help organizations make smarter decisions, embrace innovation, and create
-              sustainable growth through technology and strategic thinking.
-            </p>
-          </Card>
-          <Card className="p-8 border-border">
-            <Eye className="h-7 w-7 text-accent" />
+        <div className="mt-14 mx-auto max-w-3xl">
+          <Card className="p-10 border-border text-center">
+            <Eye className="h-7 w-7 text-accent mx-auto" />
             <h3 className="mt-5 text-2xl font-semibold text-foreground">Our Vision</h3>
             <p className="mt-3 leading-relaxed text-muted-foreground">
-              A world where every business has access to the tools, insights, and digital
-              solutions needed to reach its full potential.
+              Making your business better. Much Better. We exist to give every organization
+              the clarity, tools, and digital craftsmanship needed to reach its full potential
+              and create lasting, meaningful growth.
             </p>
           </Card>
         </div>
@@ -206,6 +208,8 @@ export function WhyUs() {
 
 export function Contact() {
   const [sending, setSending] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [submittedName, setSubmittedName] = useState("");
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -231,7 +235,8 @@ export function Contact() {
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       form.reset();
-      toast.success("Thanks! We'll be in touch shortly.");
+      setSubmittedName(payload.name);
+      setConfirmOpen(true);
     } catch (err) {
       console.error(err);
       toast.error("Something went wrong. Please try again or email us directly.");
@@ -245,7 +250,6 @@ export function Contact() {
         <SectionHeading
           eyebrow="Contact"
           title="Lets make something better, much better."
-          intro="Ready to improve your business, optimize operations, or create a stronger online presence?"
         />
         <div className="mb-10 text-center">
           <h3 className="text-xl font-semibold text-foreground">Get In Touch</h3>
@@ -304,6 +308,24 @@ export function Contact() {
           </form>
         </Card>
       </div>
+      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <div className="mx-auto mb-2 inline-flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+              <CheckCircle2 className="h-8 w-8 text-primary" />
+            </div>
+            <DialogTitle className="text-center text-2xl">Message received</DialogTitle>
+            <DialogDescription className="text-center pt-2">
+              {submittedName ? `Thanks, ${submittedName}!` : "Thanks!"} We&apos;ve received your
+              message and a confirmation has been sent to your inbox. Gustav will be in touch
+              shortly at gustav@muchbetter.world or +27 67 833 7199.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="sm:justify-center">
+            <Button onClick={() => setConfirmOpen(false)} size="lg">Close</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
