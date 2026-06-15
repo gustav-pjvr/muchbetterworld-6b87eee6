@@ -30,6 +30,7 @@ type ClientSite = {
   preview_status: string;
   preview_error: string | null;
   preview_updated_at: string | null;
+  display_order: number;
 };
 
 export const Route = createFileRoute("/admin")({
