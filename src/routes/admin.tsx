@@ -14,7 +14,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
-import { Loader2, Trash2, LogOut, RefreshCw, Check, Mail } from "lucide-react";
+import { Loader2, Trash2, LogOut, RefreshCw, Check, Mail, ArrowUp, ArrowDown } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { getEmailDashboard, retryFailedEmail, type EmailDashboardData } from "@/lib/email-admin.functions";
 
