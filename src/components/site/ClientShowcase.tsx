@@ -90,7 +90,6 @@ export function ClientShowcaseButton() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="font-medium text-foreground">{s.name}</div>
-                      <div className="text-xs text-muted-foreground truncate">{s.url}</div>
                       {s.description && (
                         <div className="mt-1 text-sm text-muted-foreground line-clamp-1">{s.description}</div>
                       )}
@@ -114,7 +113,6 @@ function PreviewDialog({ site, onClose }: { site: ClientSite | null; onClose: ()
       <DialogContent className="max-w-3xl">
         <DialogHeader>
           <DialogTitle>{site?.name}</DialogTitle>
-          <DialogDescription className="truncate">{site?.url}</DialogDescription>
         </DialogHeader>
         <div className="rounded-md border border-border bg-secondary/40 overflow-hidden min-h-[280px] flex items-center justify-center">
           {site?.preview_url && site.preview_status === "ready" ? (
