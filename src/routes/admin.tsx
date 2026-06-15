@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
@@ -42,6 +42,7 @@ export const Route = createFileRoute("/admin")({
 function AdminPage() {
   const [email, setEmail] = useState<string | null>(null);
   const [checking, setChecking] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -64,6 +65,7 @@ function AdminPage() {
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     setEmail(null);
+    navigate({ to: "/" });
   };
 
   if (checking) {
