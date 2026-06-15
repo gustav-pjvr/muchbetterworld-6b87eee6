@@ -113,7 +113,6 @@ function PreviewDialog({ site, onClose }: { site: ClientSite | null; onClose: ()
       <DialogContent className="max-w-3xl">
         <DialogHeader>
           <DialogTitle>{site?.name}</DialogTitle>
-          <DialogDescription className="truncate">{site?.url}</DialogDescription>
         </DialogHeader>
         <div className="rounded-md border border-border bg-secondary/40 overflow-hidden min-h-[280px] flex items-center justify-center">
           {site?.preview_url && site.preview_status === "ready" ? (
