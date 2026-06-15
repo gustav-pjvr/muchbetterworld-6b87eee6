@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,7 +8,6 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
-import { previewSite } from "@/lib/firecrawl.functions";
 import { ExternalLink, Loader2, Globe2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -18,6 +16,8 @@ type ClientSite = {
   name: string;
   url: string;
   description: string | null;
+  preview_url: string | null;
+  preview_status: string;
 };
 
 export function ClientShowcaseButton() {
@@ -31,7 +31,7 @@ export function ClientShowcaseButton() {
     setLoading(true);
     supabase
       .from("client_sites")
-      .select("id,name,url,description")
+      .select("id,name,url,description,preview_url,preview_status")
       .order("created_at", { ascending: false })
       .then(({ data, error }) => {
         if (error) toast.error("Couldn't load clients");
@@ -68,13 +68,20 @@ export function ClientShowcaseButton() {
                 <li key={s.id}>
                   <button
                     onClick={() => setSelected(s)}
-                    className="w-full text-left py-3 px-2 rounded hover:bg-secondary transition-colors"
+                    className="w-full text-left py-3 px-2 rounded hover:bg-secondary transition-colors flex gap-3 items-center"
                   >
-                    <div className="font-medium text-foreground">{s.name}</div>
-                    <div className="text-xs text-muted-foreground truncate">{s.url}</div>
-                    {s.description && (
-                      <div className="mt-1 text-sm text-muted-foreground">{s.description}</div>
-                    )}
+                    <div className="w-20 h-14 shrink-0 rounded border border-border bg-secondary/40 overflow-hidden">
+                      {s.preview_url && s.preview_status === "ready" ? (
+                        <img src={s.preview_url} alt="" className="w-full h-full object-cover" />
+                      ) : null}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="font-medium text-foreground">{s.name}</div>
+                      <div className="text-xs text-muted-foreground truncate">{s.url}</div>
+                      {s.description && (
+                        <div className="mt-1 text-sm text-muted-foreground line-clamp-1">{s.description}</div>
+                      )}
+                    </div>
                   </button>
                 </li>
               ))}
@@ -89,29 +96,6 @@ export function ClientShowcaseButton() {
 }
 
 function PreviewDialog({ site, onClose }: { site: ClientSite | null; onClose: () => void }) {
-  const fetchPreview = useServerFn(previewSite);
-  const [loading, setLoading] = useState(false);
-  const [screenshot, setScreenshot] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!site) {
-      setScreenshot(null);
-      setError(null);
-      return;
-    }
-    setLoading(true);
-    setError(null);
-    setScreenshot(null);
-    fetchPreview({ data: { url: site.url } })
-      .then((r) => {
-        if (!r.ok) setError(r.error || "Couldn't load preview");
-        else setScreenshot(r.screenshot ?? null);
-      })
-      .catch((e) => setError(e instanceof Error ? e.message : "Couldn't load preview"))
-      .finally(() => setLoading(false));
-  }, [site, fetchPreview]);
-
   return (
     <Dialog open={!!site} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-3xl">
@@ -120,12 +104,17 @@ function PreviewDialog({ site, onClose }: { site: ClientSite | null; onClose: ()
           <DialogDescription className="truncate">{site?.url}</DialogDescription>
         </DialogHeader>
         <div className="rounded-md border border-border bg-secondary/40 overflow-hidden min-h-[280px] flex items-center justify-center">
-          {loading && <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />}
-          {!loading && error && (
-            <p className="p-6 text-sm text-muted-foreground text-center">{error}</p>
-          )}
-          {!loading && screenshot && (
-            <img src={screenshot} alt={`Preview of ${site?.name}`} className="w-full h-auto" />
+          {site?.preview_url && site.preview_status === "ready" ? (
+            <img src={site.preview_url} alt={`Preview of ${site.name}`} className="w-full h-auto" />
+          ) : site?.preview_status === "pending" ? (
+            <div className="p-6 text-center text-sm text-muted-foreground flex flex-col items-center gap-2">
+              <Loader2 className="h-6 w-6 animate-spin" />
+              Preview is being captured…
+            </div>
+          ) : (
+            <p className="p-6 text-sm text-muted-foreground text-center">
+              No preview available yet.
+            </p>
           )}
         </div>
         <div className="flex justify-end gap-2">
