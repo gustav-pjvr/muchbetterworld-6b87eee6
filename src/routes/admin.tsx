@@ -322,6 +322,26 @@ function AdminContent({ email }: { email: string }) {
                     <Button
                       variant="ghost"
                       size="icon"
+                      onClick={() => handleMove(s.id, "up")}
+                      disabled={sites.findIndex((x) => x.id === s.id) === 0}
+                      aria-label="Move up"
+                      title="Move up"
+                    >
+                      <ArrowUp className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleMove(s.id, "down")}
+                      disabled={sites.findIndex((x) => x.id === s.id) === sites.length - 1}
+                      aria-label="Move down"
+                      title="Move down"
+                    >
+                      <ArrowDown className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       onClick={() => runCapture(s.id)}
                       disabled={busy}
                       aria-label="Re-scrape preview"
