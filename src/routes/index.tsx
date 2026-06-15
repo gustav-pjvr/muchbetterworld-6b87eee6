@@ -122,6 +122,7 @@ function Hero() {
           <Button size="lg" variant="outline" onClick={scrollTo("services")}>
             Explore services
           </Button>
+          <ClientShowcaseButton />
         </div>
       </div>
     </section>
