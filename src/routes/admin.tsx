@@ -42,6 +42,7 @@ export const Route = createFileRoute("/admin")({
 function AdminPage() {
   const [email, setEmail] = useState<string | null>(null);
   const [checking, setChecking] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
