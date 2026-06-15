@@ -199,6 +199,8 @@ export function WhyUs() {
 
 export function Contact() {
   const [sending, setSending] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [submittedName, setSubmittedName] = useState("");
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -224,7 +226,8 @@ export function Contact() {
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       form.reset();
-      toast.success("Thanks! We'll be in touch shortly.");
+      setSubmittedName(payload.name);
+      setConfirmOpen(true);
     } catch (err) {
       console.error(err);
       toast.error("Something went wrong. Please try again or email us directly.");
@@ -238,7 +241,6 @@ export function Contact() {
         <SectionHeading
           eyebrow="Contact"
           title="Lets make something better, much better."
-          intro="Ready to improve your business, optimize operations, or create a stronger online presence?"
         />
         <div className="mb-10 text-center">
           <h3 className="text-xl font-semibold text-foreground">Get In Touch</h3>
