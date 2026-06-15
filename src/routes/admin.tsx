@@ -47,14 +47,29 @@ function AdminPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      setEmail(data.user?.email ?? null);
-      setChecking(false);
+    let cancelled = false;
+    // 1. Instant restore from persisted localStorage session — no flash of the login screen.
+    supabase.auth.getSession().then(({ data }) => {
+      if (cancelled) return;
+      if (data.session?.user?.email) {
+        setEmail(data.session.user.email);
+        setChecking(false);
+      }
+      // 2. Then revalidate with the Auth server in the background.
+      supabase.auth.getUser().then(({ data: userData, error }) => {
+        if (cancelled) return;
+        if (!error) setEmail(userData.user?.email ?? null);
+        setChecking(false);
+      });
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (cancelled) return;
       setEmail(session?.user?.email ?? null);
     });
-    return () => sub.subscription.unsubscribe();
+    return () => {
+      cancelled = true;
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
   const handleSignIn = async () => {
