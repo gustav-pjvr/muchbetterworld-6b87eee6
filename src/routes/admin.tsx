@@ -297,3 +297,88 @@ function PreviewBadge({ status }: { status: string }) {
   if (status === "failed") return <Badge variant="destructive" className="text-xs">Failed</Badge>;
   return <Badge variant="outline" className="text-xs">No preview</Badge>;
 }
+
+const THEME_SWATCHES: Record<ThemeId, string[]> = {
+  default: ["#0a2540", "#1b4965", "#2a9d8f", "#e0fbfc"],
+  ocean: ["#0c2340", "#1a4a6e", "#2d8a9e", "#5cbdb9"],
+  sunset: ["#ff6b35", "#f7931e", "#e84393", "#fef0e0"],
+  forest: ["#1a3c2a", "#2d5a3d", "#5a8a5c", "#dce5d4"],
+  midnight: ["#0f0a2e", "#1e1546", "#7c3aed", "#c4b5fd"],
+  rose: ["#5c0a1a", "#a91e3a", "#e85d75", "#fde2e6"],
+};
+
+function ThemePicker() {
+  const getFn = useServerFn(getActiveTheme);
+  const setFn = useServerFn(setActiveTheme);
+  const router = useRouter();
+  const [current, setCurrent] = useState<ThemeId>("default");
+  const [saving, setSaving] = useState<ThemeId | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getFn()
+      .then((r) => {
+        if (isThemeId(r.theme)) setCurrent(r.theme);
+      })
+      .finally(() => setLoading(false));
+  }, [getFn]);
+
+  const choose = async (id: ThemeId) => {
+    if (id === current) return;
+    setSaving(id);
+    try {
+      await setFn({ data: { theme: id } });
+      setCurrent(id);
+      toast.success("Theme updated");
+      router.invalidate();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed");
+    } finally {
+      setSaving(null);
+    }
+  };
+
+  return (
+    <Card className="p-6">
+      <h2 className="text-lg font-semibold">Website color theme</h2>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Pick the active color palette. The site loads in this theme on every visit.
+      </p>
+      {loading ? (
+        <div className="flex justify-center py-6">
+          <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+        </div>
+      ) : (
+        <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {THEMES.map((t) => {
+            const active = current === t.id;
+            const busy = saving === t.id;
+            return (
+              <button
+                key={t.id}
+                onClick={() => choose(t.id)}
+                disabled={!!saving}
+                className={`group relative text-left rounded-xl border p-4 transition-all ${
+                  active
+                    ? "border-primary ring-2 ring-primary/30 bg-primary/5"
+                    : "border-border hover:border-primary/50 hover:bg-secondary/40"
+                } ${saving && !busy ? "opacity-60" : ""}`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">{t.label}</span>
+                  {active && <Check className="h-4 w-4 text-primary" />}
+                  {busy && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+                </div>
+                <div className="mt-3 flex h-8 overflow-hidden rounded-md border border-border">
+                  {THEME_SWATCHES[t.id].map((c, i) => (
+                    <div key={i} className="flex-1" style={{ backgroundColor: c }} />
+                  ))}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </Card>
+  );
+}
