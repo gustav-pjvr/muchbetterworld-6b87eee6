@@ -400,3 +400,241 @@ function ThemePicker() {
     </Card>
   );
 }
+
+const RANGES: { id: "24h" | "7d" | "30d"; label: string; hours: number }[] = [
+  { id: "24h", label: "Last 24h", hours: 24 },
+  { id: "7d", label: "7 days", hours: 24 * 7 },
+  { id: "30d", label: "30 days", hours: 24 * 30 },
+];
+
+function fmtTime(iso: string) {
+  const d = new Date(iso);
+  return d.toLocaleString(undefined, { dateStyle: "short", timeStyle: "short" });
+}
+
+function StatusBadge({ status }: { status: string }) {
+  const s = status.toLowerCase();
+  if (s === "sent")
+    return <Badge className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30" variant="outline">Sent</Badge>;
+  if (s === "dlq" || s === "failed" || s === "bounced")
+    return <Badge variant="destructive" className="text-xs">{s === "dlq" ? "Failed" : s.charAt(0).toUpperCase() + s.slice(1)}</Badge>;
+  if (s === "suppressed" || s === "complained")
+    return <Badge className="bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30" variant="outline">{s.charAt(0).toUpperCase() + s.slice(1)}</Badge>;
+  if (s === "pending")
+    return <Badge variant="outline" className="text-xs gap-1"><Loader2 className="h-3 w-3 animate-spin" />Pending</Badge>;
+  return <Badge variant="outline" className="text-xs">{status}</Badge>;
+}
+
+function EmailDashboard() {
+  const fetchFn = useServerFn(getEmailDashboard);
+  const [range, setRange] = useState<"24h" | "7d" | "30d" | "custom">("7d");
+  const [customFrom, setCustomFrom] = useState<string>(() =>
+    new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
+  );
+  const [customTo, setCustomTo] = useState<string>(() => new Date().toISOString().slice(0, 10));
+  const [template, setTemplate] = useState<string>("__all__");
+  const [status, setStatus] = useState<string>("__all__");
+  const [data, setData] = useState<EmailDashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const computeRange = () => {
+    if (range === "custom") {
+      const since = new Date(customFrom + "T00:00:00").toISOString();
+      const until = new Date(customTo + "T23:59:59.999").toISOString();
+      return { since, until };
+    }
+    const hours = RANGES.find((r) => r.id === range)!.hours;
+    return {
+      since: new Date(Date.now() - hours * 60 * 60 * 1000).toISOString(),
+      until: new Date().toISOString(),
+    };
+  };
+
+  const load = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { since, until } = computeRange();
+      const r = await fetchFn({
+        data: {
+          sinceIso: since,
+          untilIso: until,
+          template: template === "__all__" ? null : template,
+          status: status === "__all__" ? null : status,
+          limit: 50,
+        },
+      });
+      setData(r);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to load");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [range, customFrom, customTo, template, status]);
+
+  return (
+    <Card className="p-6">
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div className="flex items-center gap-2">
+          <Mail className="h-5 w-5 text-muted-foreground" />
+          <h2 className="text-lg font-semibold">Email activity</h2>
+        </div>
+        <Button variant="outline" size="sm" onClick={load} disabled={loading} className="gap-2">
+          <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+          Refresh
+        </Button>
+      </div>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Deduplicated by message — each email is counted once with its latest status.
+      </p>
+
+      {/* Filters */}
+      <div className="mt-5 flex flex-wrap items-end gap-3">
+        <div className="flex flex-wrap gap-1.5">
+          {RANGES.map((r) => (
+            <Button
+              key={r.id}
+              size="sm"
+              variant={range === r.id ? "default" : "outline"}
+              onClick={() => setRange(r.id)}
+            >
+              {r.label}
+            </Button>
+          ))}
+          <Button size="sm" variant={range === "custom" ? "default" : "outline"} onClick={() => setRange("custom")}>
+            Custom
+          </Button>
+        </div>
+
+        {range === "custom" && (
+          <div className="flex items-end gap-2">
+            <div>
+              <Label htmlFor="from" className="text-xs">From</Label>
+              <Input id="from" type="date" value={customFrom} onChange={(e) => setCustomFrom(e.target.value)} className="h-9" />
+            </div>
+            <div>
+              <Label htmlFor="to" className="text-xs">To</Label>
+              <Input id="to" type="date" value={customTo} onChange={(e) => setCustomTo(e.target.value)} className="h-9" />
+            </div>
+          </div>
+        )}
+
+        <div className="min-w-[180px]">
+          <Label className="text-xs">Template</Label>
+          <Select value={template} onValueChange={setTemplate}>
+            <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="__all__">All templates</SelectItem>
+              {(data?.templates ?? []).map((t) => (
+                <SelectItem key={t} value={t}>{t}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="min-w-[160px]">
+          <Label className="text-xs">Status</Label>
+          <Select value={status} onValueChange={setStatus}>
+            <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="__all__">All statuses</SelectItem>
+              <SelectItem value="sent">Sent</SelectItem>
+              <SelectItem value="failed">Failed</SelectItem>
+              <SelectItem value="suppressed">Suppressed</SelectItem>
+              <SelectItem value="pending">Pending</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <StatCard label="Total" value={data?.stats.total ?? 0} loading={loading} />
+        <StatCard label="Sent" value={data?.stats.sent ?? 0} tone="success" loading={loading} />
+        <StatCard label="Failed" value={data?.stats.failed ?? 0} tone="danger" loading={loading} />
+        <StatCard label="Suppressed" value={data?.stats.suppressed ?? 0} tone="warning" loading={loading} />
+      </div>
+
+      {/* Log table */}
+      <div className="mt-6 rounded-lg border border-border overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-secondary/40 text-xs uppercase tracking-wide text-muted-foreground">
+              <tr>
+                <th className="text-left p-3 font-medium">Template</th>
+                <th className="text-left p-3 font-medium">Recipient</th>
+                <th className="text-left p-3 font-medium">Status</th>
+                <th className="text-left p-3 font-medium">When</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {error ? (
+                <tr><td colSpan={4} className="p-6 text-center text-sm text-destructive">{error}</td></tr>
+              ) : loading && !data ? (
+                <tr><td colSpan={4} className="p-6 text-center"><Loader2 className="h-4 w-4 animate-spin inline text-muted-foreground" /></td></tr>
+              ) : !data || data.rows.length === 0 ? (
+                <tr><td colSpan={4} className="p-6 text-center text-sm text-muted-foreground">No emails in this range.</td></tr>
+              ) : (
+                data.rows.map((r) => (
+                  <tr key={r.id} className="hover:bg-secondary/30">
+                    <td className="p-3 font-medium">{r.template_name}</td>
+                    <td className="p-3 text-muted-foreground truncate max-w-[220px]" title={r.recipient_email}>{r.recipient_email}</td>
+                    <td className="p-3">
+                      <div className="flex flex-col gap-1">
+                        <StatusBadge status={r.status} />
+                        {r.error_message && (r.status === "dlq" || r.status === "failed" || r.status === "bounced") && (
+                          <span className="text-xs text-destructive truncate max-w-[260px]" title={r.error_message}>{r.error_message}</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="p-3 text-muted-foreground whitespace-nowrap">{fmtTime(r.created_at)}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+        {data && data.rows.length >= 50 && (
+          <div className="px-3 py-2 text-xs text-muted-foreground border-t border-border">
+            Showing the 50 most recent matches. Narrow the filters to see more.
+          </div>
+        )}
+      </div>
+    </Card>
+  );
+}
+
+function StatCard({
+  label,
+  value,
+  tone,
+  loading,
+}: {
+  label: string;
+  value: number;
+  tone?: "success" | "danger" | "warning";
+  loading?: boolean;
+}) {
+  const toneClass =
+    tone === "success"
+      ? "text-emerald-600 dark:text-emerald-400"
+      : tone === "danger"
+        ? "text-destructive"
+        : tone === "warning"
+          ? "text-amber-600 dark:text-amber-400"
+          : "text-foreground";
+  return (
+    <div className="rounded-lg border border-border bg-card p-4">
+      <div className="text-xs uppercase tracking-wide text-muted-foreground">{label}</div>
+      <div className={`mt-1 text-2xl font-semibold ${toneClass}`}>
+        {loading ? <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /> : value}
+      </div>
+    </div>
+  );
+}
