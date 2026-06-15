@@ -60,47 +60,69 @@ export const Route = createFileRoute("/api/public/contact")({
           );
         }
 
-        // Enqueue notification email. Best-effort: if the email infra isn't
-        // set up yet (no domain connected), we log and still return success
-        // so the submission isn't lost.
-        try {
-          const origin = new URL(request.url).origin;
-          const sendRes = await fetch(
-            `${origin}/lovable/email/transactional/send`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                // The send route requires the service role to allow
-                // unauthenticated internal callers like this one.
-                apikey: process.env.SUPABASE_SERVICE_ROLE_KEY ?? "",
-                Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY ?? ""}`,
-              },
-              body: JSON.stringify({
-                templateName: "signup-notification",
-                recipientEmail: NOTIFICATION_RECIPIENT,
-                idempotencyKey: `signup-notification-${inserted.id}`,
-                templateData: {
-                  name: data.name,
-                  email: data.email,
-                  company: data.company || null,
-                  phone: data.phone || null,
-                  projectType: data.projectType || null,
-                  message: data.message,
-                  submittedAt: inserted.created_at,
+        // Enqueue notification email to admin + confirmation email to the
+        // submitter. Best-effort: if the email infra isn't fully set up yet
+        // (no domain connected), we log and still return success so the
+        // submission isn't lost.
+        const origin = new URL(request.url).origin;
+        const sendKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
+        const sendEmail = async (body: Record<string, unknown>, label: string) => {
+          try {
+            const sendRes = await fetch(
+              `${origin}/lovable/email/transactional/send`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  apikey: sendKey,
+                  Authorization: `Bearer ${sendKey}`,
                 },
-              }),
-            },
-          );
-          if (!sendRes.ok) {
-            const body = await sendRes.text().catch(() => "");
-            console.warn(
-              `[contact] email enqueue returned ${sendRes.status}: ${body}`,
+                body: JSON.stringify(body),
+              },
             );
+            if (!sendRes.ok) {
+              const text = await sendRes.text().catch(() => "");
+              console.warn(
+                `[contact] ${label} enqueue returned ${sendRes.status}: ${text}`,
+              );
+            }
+          } catch (err) {
+            console.warn(`[contact] ${label} enqueue failed:`, err);
           }
-        } catch (err) {
-          console.warn("[contact] email enqueue failed:", err);
-        }
+        };
+
+        await Promise.all([
+          sendEmail(
+            {
+              templateName: "signup-notification",
+              recipientEmail: NOTIFICATION_RECIPIENT,
+              idempotencyKey: `signup-notification-${inserted.id}`,
+              templateData: {
+                name: data.name,
+                email: data.email,
+                company: data.company || null,
+                phone: data.phone || null,
+                projectType: data.projectType || null,
+                message: data.message,
+                submittedAt: inserted.created_at,
+              },
+            },
+            "admin notification",
+          ),
+          sendEmail(
+            {
+              templateName: "contact-confirmation",
+              recipientEmail: data.email,
+              idempotencyKey: `contact-confirmation-${inserted.id}`,
+              templateData: {
+                name: data.name,
+                message: data.message,
+                projectType: data.projectType || null,
+              },
+            },
+            "user confirmation",
+          ),
+        ]);
 
         return Response.json({ ok: true });
       },
