@@ -1,10 +1,9 @@
 export const THEMES = [
-  { id: "default", label: "Default — Navy & Teal" },
-  { id: "ocean", label: "Ocean — Deep Blue & Cyan" },
-  { id: "sunset", label: "Sunset — Coral & Amber" },
-  { id: "forest", label: "Forest — Green & Sage" },
-  { id: "midnight", label: "Midnight — Dark & Violet" },
-  { id: "rose", label: "Rose — Burgundy & Blush" },
+  { id: "default", label: "Default Navy & Teal" },
+  { id: "bert", label: "Bert Dark Cyan" },
+  { id: "desert", label: "Desert Sun & Dark Blue" },
+  { id: "pieces", label: "In Pieces Crimson" },
+  { id: "curve", label: "The Curve Sage" },
 ] as const;
 
 export type ThemeId = (typeof THEMES)[number]["id"];
