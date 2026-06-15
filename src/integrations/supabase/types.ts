@@ -170,6 +170,24 @@ export type Database = {
         }
         Relationships: []
       }
+      site_settings: {
+        Row: {
+          id: number
+          theme: string
+          updated_at: string
+        }
+        Insert: {
+          id?: number
+          theme?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: number
+          theme?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       suppressed_emails: {
         Row: {
           created_at: string
