@@ -11,6 +11,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { getActiveTheme } from "../lib/site-settings.functions";
+import { isThemeId } from "../lib/theme";
 
 function NotFoundComponent() {
   return (
@@ -102,11 +104,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
+  loader: async () => {
+    try {
+      const { theme } = await getActiveTheme();
+      return { theme };
+    } catch {
+      return { theme: "default" as const };
+    }
+  },
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const data = Route.useLoaderData() as { theme?: string } | undefined;
+  const theme = isThemeId(data?.theme) ? data!.theme : "default";
   return (
-    <html lang="en">
+    <html lang="en" data-theme={theme}>
       <head>
         <HeadContent />
       </head>

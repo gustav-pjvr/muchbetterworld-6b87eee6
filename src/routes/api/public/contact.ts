@@ -13,7 +13,7 @@ const ContactSchema = z.object({
 // Address that receives signup-notification emails.
 // Swap this when ready (or set NOTIFICATION_EMAIL env var).
 const NOTIFICATION_RECIPIENT =
-  process.env.NOTIFICATION_EMAIL ?? "hello@muchbetter.world";
+  process.env.NOTIFICATION_EMAIL ?? "gustav@muchbetter.world";
 
 export const Route = createFileRoute("/api/public/contact")({
   server: {

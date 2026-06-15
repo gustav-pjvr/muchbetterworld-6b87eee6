@@ -96,19 +96,21 @@ export function Services() {
       icon: BarChart3,
       title: "Business Analysis",
       desc: "We identify inefficiencies, uncover opportunities, and provide data-driven recommendations that improve performance.",
-      offers: ["Process Analysis", "Requirements Gathering", "Stakeholder Engagement", "Gap Analysis", "Business Documentation", "Strategic Recommendations"],
     },
     {
       icon: Lightbulb,
       title: "Consulting",
       desc: "Expert guidance to help organizations navigate challenges and make confident decisions.",
-      offers: ["Business Strategy", "Digital Transformation Planning", "Operational Improvement", "Change Management", "Technology Advisory", "Project Planning"],
     },
     {
       icon: Code2,
       title: "Website Development",
       desc: "Modern websites designed to strengthen your brand and support your business goals.",
-      offers: ["Corporate Websites", "E-commerce Solutions", "Landing Pages", "Website Redesigns", "Mobile-Responsive Design", "Performance Optimization"],
+    },
+    {
+      icon: Puzzle,
+      title: "Custom Solutions",
+      desc: "Every organization is unique. We create tailored solutions that align with your objectives, challenges, and budget.",
     },
   ];
   return (
@@ -119,40 +121,19 @@ export function Services() {
           title="Better solutions for every stage of growth."
           intro="Strategy, analysis, and digital delivery brought together around your business goals."
         />
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {services.map((s) => (
             <Card
               key={s.title}
-              className="p-8 border-border hover:shadow-lg transition-shadow group"
+              className="p-8 border-border hover:shadow-lg hover:-translate-y-1 transition-all group cursor-default"
             >
               <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                 <s.icon className="h-6 w-6" />
               </div>
               <h3 className="mt-5 text-xl font-semibold text-foreground">{s.title}</h3>
               <p className="mt-3 text-muted-foreground leading-relaxed">{s.desc}</p>
-              <h4 className="mt-6 text-sm font-semibold uppercase tracking-[0.16em] text-foreground">What We Offer</h4>
-              <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-                {s.offers.map((offer) => (
-                  <li key={offer} className="flex items-start gap-2">
-                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-                    {offer}
-                  </li>
-                ))}
-              </ul>
             </Card>
           ))}
-        </div>
-        <div className="mt-8 flex gap-5 border-t border-border pt-8">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-            <Puzzle className="h-6 w-6" />
-          </div>
-          <div>
-            <h3 className="text-xl font-semibold text-foreground">Custom Solutions</h3>
-            <p className="mt-2 max-w-3xl text-muted-foreground">
-              Every organization is unique. We create tailored solutions that align with your
-              objectives, challenges, and budget.
-            </p>
-          </div>
         </div>
       </div>
     </section>
@@ -269,8 +250,8 @@ export function Contact() {
         <div className="mb-10 text-center">
           <h3 className="text-xl font-semibold text-foreground">Get In Touch</h3>
           <div className="mt-4 flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm text-muted-foreground">
-            <a href="mailto:hello@muchbetter.world" className="hover:text-foreground">Email: hello@muchbetter.world</a>
-            <span>Phone: +27 XX XXX XXXX</span>
+            <a href="mailto:gustav@muchbetter.world" className="hover:text-foreground">Email: gustav@muchbetter.world</a>
+            <a href="tel:+27678337199" className="hover:text-foreground">Phone: +27 67 833 7199</a>
             <span>Location: South Africa</span>
           </div>
         </div>
