@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, X, Globe2 } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 
 const NAV = [
