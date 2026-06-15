@@ -20,6 +20,10 @@ export type Database = {
           description: string | null
           id: string
           name: string
+          preview_error: string | null
+          preview_status: string
+          preview_updated_at: string | null
+          preview_url: string | null
           url: string
         }
         Insert: {
@@ -27,6 +31,10 @@ export type Database = {
           description?: string | null
           id?: string
           name: string
+          preview_error?: string | null
+          preview_status?: string
+          preview_updated_at?: string | null
+          preview_url?: string | null
           url: string
         }
         Update: {
@@ -34,6 +42,10 @@ export type Database = {
           description?: string | null
           id?: string
           name?: string
+          preview_error?: string | null
+          preview_status?: string
+          preview_updated_at?: string | null
+          preview_url?: string | null
           url?: string
         }
         Relationships: []
