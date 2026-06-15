@@ -319,31 +319,35 @@ export function Contact() {
         </div>
         <Card className="p-8 border-border">
           <h3 className="mb-6 text-2xl font-semibold text-foreground">Send Us a Message</h3>
-          <form onSubmit={onSubmit} className="space-y-5">
+          <form onSubmit={onSubmit} noValidate className="space-y-5">
             <div className="grid md:grid-cols-2 gap-5">
               <div>
-                <Label htmlFor="name">Name</Label>
-                <Input id="name" name="name" required className="mt-2" placeholder="Your name" />
+                <Label htmlFor="name">Name <span className="text-destructive">*</span></Label>
+                <Input id="name" name="name" required maxLength={120} autoComplete="name" aria-invalid={!!errors.name} className="mt-2" placeholder="Your name" />
+                {errors.name && <p className="mt-1 text-sm text-destructive">{errors.name}</p>}
               </div>
               <div>
-                <Label htmlFor="company">Company</Label>
-                <Input id="company" name="company" className="mt-2" placeholder="Company name" />
+                <Label htmlFor="company">Company <span className="text-destructive">*</span></Label>
+                <Input id="company" name="company" required maxLength={120} autoComplete="organization" aria-invalid={!!errors.company} className="mt-2" placeholder="Company name" />
+                {errors.company && <p className="mt-1 text-sm text-destructive">{errors.company}</p>}
               </div>
             </div>
             <div className="grid md:grid-cols-2 gap-5">
               <div>
-                <Label htmlFor="email">Email Address</Label>
-                <Input id="email" name="email" type="email" required className="mt-2" placeholder="you@company.com" />
+                <Label htmlFor="email">Email Address <span className="text-destructive">*</span></Label>
+                <Input id="email" name="email" type="email" required maxLength={255} autoComplete="email" aria-invalid={!!errors.email} className="mt-2" placeholder="you@company.com" />
+                {errors.email && <p className="mt-1 text-sm text-destructive">{errors.email}</p>}
               </div>
               <div>
-                <Label htmlFor="phone">Phone Number</Label>
-                <Input id="phone" name="phone" type="tel" className="mt-2" placeholder="+27" />
+                <Label htmlFor="phone">Phone Number <span className="text-destructive">*</span></Label>
+                <Input id="phone" name="phone" type="tel" required maxLength={40} autoComplete="tel" aria-invalid={!!errors.phone} className="mt-2" placeholder="+27 67 833 7199" />
+                {errors.phone && <p className="mt-1 text-sm text-destructive">{errors.phone}</p>}
               </div>
             </div>
             <div>
-              <Label htmlFor="project-type">Project Type</Label>
-              <Select name="projectType">
-                <SelectTrigger id="project-type" className="mt-2 w-full">
+              <Label htmlFor="project-type">Project Type <span className="text-destructive">*</span></Label>
+              <Select name="projectType" value={projectType} onValueChange={setProjectType} required>
+                <SelectTrigger id="project-type" aria-invalid={!!errors.projectType} className="mt-2 w-full">
                   <SelectValue placeholder="Select a project type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -353,11 +357,14 @@ export function Contact() {
                   <SelectItem value="custom-solution">Custom Solution</SelectItem>
                 </SelectContent>
               </Select>
+              {errors.projectType && <p className="mt-1 text-sm text-destructive">{errors.projectType}</p>}
             </div>
             <div>
-              <Label htmlFor="message">Message</Label>
-              <Textarea id="message" name="message" required rows={5} className="mt-2" placeholder="Tell us about your goals…" />
+              <Label htmlFor="message">Message <span className="text-muted-foreground text-xs">(optional)</span></Label>
+              <Textarea id="message" name="message" rows={5} maxLength={4000} aria-invalid={!!errors.message} className="mt-2" placeholder="Tell us about your goals…" />
+              {errors.message && <p className="mt-1 text-sm text-destructive">{errors.message}</p>}
             </div>
+
             <div className="flex justify-end pt-2">
               <Button type="submit" size="lg" disabled={sending}>
                 {sending ? "Sending…" : "Start a Conversation"}
