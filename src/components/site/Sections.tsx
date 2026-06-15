@@ -206,36 +206,93 @@ export function WhyUs() {
   );
 }
 
+const PROJECT_TYPES = [
+  "business-analysis",
+  "consulting",
+  "website-development",
+  "custom-solution",
+] as const;
+
+const contactSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(2, { message: "Please enter your name (min 2 characters)." })
+    .max(120, { message: "Name must be 120 characters or fewer." })
+    .regex(/^[\p{L}\p{M}'’\-.\s]+$/u, {
+      message: "Name can only contain letters, spaces, hyphens and apostrophes.",
+    }),
+  company: z
+    .string()
+    .trim()
+    .min(1, { message: "Company is required." })
+    .max(120, { message: "Company must be 120 characters or fewer." }),
+  email: z
+    .string()
+    .trim()
+    .min(1, { message: "Email is required." })
+    .max(255, { message: "Email must be 255 characters or fewer." })
+    .email({ message: "Please enter a valid email address." }),
+  phone: z
+    .string()
+    .trim()
+    .min(1, { message: "Phone number is required." })
+    .max(40, { message: "Phone number must be 40 characters or fewer." })
+    .regex(/^\+?[0-9\s().\-]{7,}$/, {
+      message: "Please enter a valid phone number.",
+    }),
+  projectType: z.enum(PROJECT_TYPES, {
+    errorMap: () => ({ message: "Please select a project type." }),
+  }),
+  message: z
+    .string()
+    .trim()
+    .max(4000, { message: "Message must be 4000 characters or fewer." })
+    .optional()
+    .or(z.literal("")),
+});
+
 export function Contact() {
   const [sending, setSending] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [submittedName, setSubmittedName] = useState("");
+  const [projectType, setProjectType] = useState<string>("");
+  const [errors, setErrors] = useState<Partial<Record<keyof z.infer<typeof contactSchema>, string>>>({});
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
     const fd = new FormData(form);
-    const payload = {
+    const raw = {
       name: String(fd.get("name") ?? "").trim(),
       company: String(fd.get("company") ?? "").trim(),
       email: String(fd.get("email") ?? "").trim(),
       phone: String(fd.get("phone") ?? "").trim(),
-      projectType: String(fd.get("projectType") ?? "").trim(),
+      projectType: projectType,
       message: String(fd.get("message") ?? "").trim(),
     };
-    if (!payload.name || !payload.email || !payload.message) {
-      toast.error("Please fill in your name, email, and message.");
+    const parsed = contactSchema.safeParse(raw);
+    if (!parsed.success) {
+      const fieldErrors: Record<string, string> = {};
+      for (const issue of parsed.error.issues) {
+        const key = issue.path[0];
+        if (typeof key === "string" && !fieldErrors[key]) fieldErrors[key] = issue.message;
+      }
+      setErrors(fieldErrors);
+      toast.error(Object.values(fieldErrors)[0] ?? "Please fix the errors and try again.");
       return;
     }
+    setErrors({});
     setSending(true);
     try {
       const res = await fetch("/api/public/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(parsed.data),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       form.reset();
-      setSubmittedName(payload.name);
+      setProjectType("");
+      setSubmittedName(parsed.data.name);
       setConfirmOpen(true);
     } catch (err) {
       console.error(err);
