@@ -25,10 +25,12 @@ const ContactSchema = z.object({
   message: z.string().trim().max(4000).optional().or(z.literal("")),
 });
 
-// Address that receives signup-notification emails.
-// Swap this when ready (or set NOTIFICATION_EMAIL env var).
 const NOTIFICATION_RECIPIENT =
   process.env.NOTIFICATION_EMAIL ?? "gustav@muchbetter.world";
+
+const SITE_NAME = "muchbetterworld";
+const SENDER_DOMAIN = "notify.muchbetter.world";
+const FROM_DOMAIN = "muchbetter.world";
 
 export const Route = createFileRoute("/api/public/contact")({
   server: {
@@ -75,54 +77,78 @@ export const Route = createFileRoute("/api/public/contact")({
           );
         }
 
-        // Enqueue notification email to admin + confirmation email to the
-        // submitter. Best-effort: if the email infra isn't fully set up yet
-        // (no domain connected), we log and still return success so the
-        // submission isn't lost.
-        const origin = new URL(request.url).origin;
-        const sendKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
-        const sendEmail = async (body: Record<string, unknown>, label: string) => {
-          try {
-            const sendRes = await fetch(
-              `${origin}/lovable/email/transactional/send`,
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  apikey: sendKey,
-                  Authorization: `Bearer ${sendKey}`,
-                },
-                body: JSON.stringify(body),
-              },
-            );
-            if (!sendRes.ok) {
-              const text = await sendRes.text().catch(() => "");
-              console.warn(
-                `[contact] ${label} enqueue returned ${sendRes.status}: ${text}`,
-              );
-            }
-          } catch (err) {
-            console.warn(`[contact] ${label} enqueue failed:`, err);
-          }
-        };
+        // Best-effort: render + enqueue the admin notification email directly,
+        // so the submission isn't lost if the email infra is still warming up.
+        try {
+          const React = await import("react");
+          const { render } = await import("@react-email/components");
+          const { template } = await import(
+            "@/lib/email-templates/signup-notification"
+          );
 
-        await sendEmail(
-          {
-            templateName: "signup-notification",
-            recipientEmail: NOTIFICATION_RECIPIENT,
-            idempotencyKey: `signup-notification-${inserted.id}`,
-            templateData: {
-              name: data.name,
-              email: data.email,
-              company: data.company || null,
-              phone: data.phone || null,
-              projectType: data.projectType || null,
-              message: data.message,
-              submittedAt: inserted.created_at,
+          const templateData = {
+            name: data.name,
+            email: data.email,
+            company: data.company || null,
+            phone: data.phone || null,
+            projectType: data.projectType || null,
+            message: data.message || "",
+            submittedAt: inserted.created_at,
+          };
+
+          const element = React.createElement(
+            template.component,
+            templateData,
+          );
+          const html = await render(element);
+          const text = await render(element, { plainText: true });
+          const subject =
+            typeof template.subject === "function"
+              ? template.subject(templateData)
+              : template.subject;
+
+          const messageId = crypto.randomUUID();
+
+          await supabaseAdmin.from("email_send_log").insert({
+            message_id: messageId,
+            template_name: "signup-notification",
+            recipient_email: NOTIFICATION_RECIPIENT,
+            status: "pending",
+          });
+
+          const { error: enqueueError } = await supabaseAdmin.rpc(
+            "enqueue_email",
+            {
+              queue_name: "transactional_emails",
+              payload: {
+                message_id: messageId,
+                to: NOTIFICATION_RECIPIENT,
+                from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
+                sender_domain: SENDER_DOMAIN,
+                subject,
+                html,
+                text,
+                purpose: "transactional",
+                label: "signup-notification",
+                idempotency_key: `signup-notification-${inserted.id}`,
+                queued_at: new Date().toISOString(),
+              },
             },
-          },
-          "admin notification",
-        );
+          );
+
+          if (enqueueError) {
+            console.warn("[contact] enqueue failed:", enqueueError);
+            await supabaseAdmin.from("email_send_log").insert({
+              message_id: messageId,
+              template_name: "signup-notification",
+              recipient_email: NOTIFICATION_RECIPIENT,
+              status: "failed",
+              error_message: `enqueue_email: ${enqueueError.message}`,
+            });
+          }
+        } catch (err) {
+          console.warn("[contact] notification render/enqueue failed:", err);
+        }
 
         return Response.json({ ok: true });
       },
