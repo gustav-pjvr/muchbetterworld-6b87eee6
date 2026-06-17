@@ -93,7 +93,6 @@ export function About() {
           eyebrow="About"
           title="Building Better Businesses Through Better Solutions"
           intro="MuchBetter helps organizations identify opportunities, solve operational challenges, and implement digital solutions."
-          highlight="Better Businesses Through Better Solutions"
         />
 
         <div className="mx-auto max-w-4xl space-y-6 text-lg leading-relaxed text-muted-foreground">
@@ -111,9 +110,18 @@ export function About() {
             <Eye className="h-7 w-7 text-accent mx-auto" />
             <h3 className="mt-5 text-2xl font-semibold text-foreground">Our Vision</h3>
             <p className="mt-3 leading-relaxed text-muted-foreground">
-              Making your business better. Much Better. We exist to give every organization
-              the clarity, tools, and digital craftsmanship needed to reach its full potential
-              and create lasting, meaningful growth.
+              <Highlighter
+                action="underline"
+                color="#EAB308"
+                strokeWidth={2.5}
+                iterations={2}
+                animationDuration={900}
+                padding={4}
+                isView
+              >
+                Making your business better. Much Better.
+              </Highlighter>{" "}
+              We exist to give every organization the clarity, tools, and digital craftsmanship needed to reach its full potential and create lasting, meaningful growth.
             </p>
           </Card>
         </div>
