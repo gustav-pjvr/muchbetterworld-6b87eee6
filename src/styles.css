@@ -263,6 +263,18 @@ html {
   background: radial-gradient(circle, rgba(120, 200, 255, 0.18) 40%, rgba(80, 180, 220, 0.08) 70%, transparent 80%);
 }
 
+@keyframes shine {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .earth-sphere { animation: none; }
   html { scroll-behavior: auto; }
