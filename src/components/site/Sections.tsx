@@ -43,42 +43,16 @@ function SectionHeading({
   eyebrow,
   title,
   intro,
-  highlight,
 }: {
   eyebrow: string;
   title: string;
   intro?: string;
-  highlight?: string;
 }) {
-  const renderTitle = () => {
-    if (!highlight) return title;
-    const idx = title.indexOf(highlight);
-    if (idx === -1) return title;
-    const before = title.slice(0, idx);
-    const after = title.slice(idx + highlight.length);
-    return (
-      <>
-        {before}
-        <Highlighter
-          action="underline"
-          color="#EAB308"
-          strokeWidth={2.5}
-          iterations={2}
-          animationDuration={900}
-          padding={4}
-          isView
-        >
-          {highlight}
-        </Highlighter>
-        {after}
-      </>
-    );
-  };
   return (
     <div className="mx-auto max-w-3xl text-center mb-14">
       <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">{eyebrow}</p>
       <h2 className="mt-3 text-3xl md:text-5xl font-semibold tracking-tight text-foreground">
-        {renderTitle()}
+        {title}
       </h2>
       {intro && <p className="mt-5 text-lg text-muted-foreground">{intro}</p>}
     </div>
