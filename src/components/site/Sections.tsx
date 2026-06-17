@@ -37,6 +37,7 @@ import {
   Puzzle,
 } from "lucide-react";
 import SideRays from "@/components/ui/SideRays";
+import { Highlighter } from "@/components/ui/Highlighter";
 
 function SectionHeading({
   eyebrow,
