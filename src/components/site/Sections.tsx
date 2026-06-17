@@ -38,6 +38,7 @@ import {
 } from "lucide-react";
 import SideRays from "@/components/ui/SideRays";
 import { Highlighter } from "@/components/ui/Highlighter";
+import { ShineBorder } from "@/components/ui/ShineBorder";
 
 function SectionHeading({
   eyebrow,
