@@ -238,11 +238,13 @@ export function WhyUs() {
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {points.map((p) => (
-            <div key={p.title} className="rounded-2xl p-8 bg-primary-foreground/5 h-full">
-              <p.icon className="h-7 w-7 text-accent" />
-              <h3 className="mt-4 text-xl font-semibold">{p.title}</h3>
-              <p className="mt-2 text-primary-foreground/80">{p.desc}</p>
-            </div>
+            <ShineBorder key={p.title} className="rounded-2xl" borderWidth={2} duration={14} shineColor="rgba(255,255,255,0.35)">
+              <div className="p-8 bg-primary-foreground/5 h-full">
+                <p.icon className="h-7 w-7 text-accent" />
+                <h3 className="mt-4 text-xl font-semibold">{p.title}</h3>
+                <p className="mt-2 text-primary-foreground/80">{p.desc}</p>
+              </div>
+            </ShineBorder>
           ))}
         </div>
       </div>
