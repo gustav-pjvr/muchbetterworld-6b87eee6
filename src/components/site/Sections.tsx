@@ -67,7 +67,9 @@ export function About() {
           eyebrow="About"
           title="Building Better Businesses Through Better Solutions"
           intro="MuchBetter helps organizations identify opportunities, solve operational challenges, and implement digital solutions."
+          highlight="Better Businesses Through Better Solutions"
         />
+
         <div className="mx-auto max-w-4xl space-y-6 text-lg leading-relaxed text-muted-foreground">
           <p>
             We combine business analysis, strategic consulting, and modern website development
