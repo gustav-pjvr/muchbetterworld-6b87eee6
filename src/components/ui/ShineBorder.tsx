@@ -37,27 +37,22 @@ export function ShineBorder({
 }: ShineBorderProps) {
   const colors = Array.isArray(shineColor) ? shineColor : [shineColor]
 
-  const gradient =
-    colors.length === 1
-      ? `linear-gradient(135deg, transparent 25%, ${colors[0]} 50%, transparent 75%)`
-      : `linear-gradient(135deg, ${colors.join(", ")})`
-
   return (
     <div
       className={cn("relative", className)}
-      style={{
-        ...style,
-        padding: borderWidth,
-        background: gradient,
-        backgroundSize: "200% 200%",
-        animation: `shine ${duration}s infinite linear`,
-      }}
+      style={style}
       {...props}
     >
       <div
-        className="relative z-10 h-full"
-        style={{ borderRadius: "inherit" }}
-      >
+        className="pointer-events-none absolute -z-10"
+        style={{
+          inset: -borderWidth,
+          background: `conic-gradient(from 0deg, transparent, ${colors.join(", ")}, transparent 30%)`,
+          animation: `shine-rotate ${duration}s linear infinite`,
+          borderRadius: "inherit",
+        }}
+      />
+      <div className="relative z-10 h-full">
         {children}
       </div>
     </div>
