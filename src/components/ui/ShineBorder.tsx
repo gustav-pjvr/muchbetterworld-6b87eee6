@@ -39,7 +39,7 @@ export function ShineBorder({
 
   const gradient =
     colors.length === 1
-      ? `linear-gradient(135deg, transparent 40%, ${colors[0]} 50%, transparent 60%)`
+      ? `linear-gradient(135deg, transparent 25%, ${colors[0]} 50%, transparent 75%)`
       : `linear-gradient(135deg, ${colors.join(", ")})`
 
   return (
