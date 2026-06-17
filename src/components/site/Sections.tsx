@@ -200,14 +200,16 @@ export function Process() {
         <ol className="grid gap-6 md:grid-cols-2 lg:grid-cols-5">
           {steps.map((s, i) => (
             <li key={s.title} className="relative h-full">
-              <div className="relative rounded-2xl p-6 bg-card h-full">
-                <div className="absolute -top-3 -left-3 h-9 w-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold shadow z-10">
-                  {i + 1}
+              <ShineBorder className="rounded-2xl" borderWidth={2} duration={14} shineColor="rgba(255,255,255,0.35)">
+                <div className="relative p-6 bg-card h-full">
+                  <div className="absolute -top-3 -left-3 h-9 w-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold shadow z-10">
+                    {i + 1}
+                  </div>
+                  <s.icon className="h-6 w-6 text-accent" />
+                  <h3 className="mt-3 font-semibold text-foreground">{s.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
                 </div>
-                <s.icon className="h-6 w-6 text-accent" />
-                <h3 className="mt-3 font-semibold text-foreground">{s.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
-              </div>
+              </ShineBorder>
             </li>
           ))}
         </ol>
