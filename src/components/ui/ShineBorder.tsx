@@ -49,7 +49,7 @@ export function ShineBorder({
         ...style,
         padding: borderWidth,
         background: gradient,
-        backgroundSize: "300% 300%",
+        backgroundSize: "200% 200%",
         animation: `shine ${duration}s infinite linear`,
       }}
       {...props}
