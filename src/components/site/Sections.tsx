@@ -37,6 +37,8 @@ import {
   Wrench,
   Puzzle,
 } from "lucide-react";
+import BorderGlow from "@/components/ui/BorderGlow";
+import SideRays from "@/components/ui/SideRays";
 
 function SectionHeading({
   eyebrow,
