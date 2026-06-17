@@ -174,7 +174,7 @@ const BorderGlow = ({
         ['--cone-spread' as string]: coneSpread,
         ['--fill-opacity' as string]: fillOpacity,
         ...glowVars,
-        ...buildGradientVars(colors),
+        ...buildGradientVars(resolvedColors),
         ...style,
       } as CSSProperties}
     >
