@@ -166,13 +166,15 @@ export function Services() {
         />
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {services.map((s) => (
-            <Card key={s.title} className="p-8 border-border hover:shadow-lg hover:-translate-y-1 transition-all group cursor-default bg-card h-full">
-              <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                <s.icon className="h-6 w-6" />
-              </div>
-              <h3 className="mt-5 text-xl font-semibold text-foreground">{s.title}</h3>
-              <p className="mt-3 text-muted-foreground leading-relaxed">{s.desc}</p>
-            </Card>
+            <ShineBorder key={s.title} className="rounded-xl" borderWidth={2} duration={14} shineColor="rgba(255,255,255,0.35)">
+              <Card className="p-8 hover:shadow-lg hover:-translate-y-1 transition-all group cursor-default bg-card h-full border-0">
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                  <s.icon className="h-6 w-6" />
+                </div>
+                <h3 className="mt-5 text-xl font-semibold text-foreground">{s.title}</h3>
+                <p className="mt-3 text-muted-foreground leading-relaxed">{s.desc}</p>
+              </Card>
+            </ShineBorder>
           ))}
         </div>
       </div>
