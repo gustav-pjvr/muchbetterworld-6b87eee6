@@ -31,6 +31,7 @@
   border-radius: inherit;
   transition: opacity 0.25s ease-out;
   z-index: -1;
+  pointer-events: none;
 }
 .border-glow-card:not(:hover):not(.sweep-active)::before,
 .border-glow-card:not(:hover):not(.sweep-active)::after,
