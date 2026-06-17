@@ -37,6 +37,8 @@ import {
   Wrench,
   Puzzle,
 } from "lucide-react";
+import BorderGlow from "@/components/ui/BorderGlow";
+import SideRays from "@/components/ui/SideRays";
 
 function SectionHeading({
   eyebrow,
@@ -78,15 +80,17 @@ export function About() {
           </p>
         </div>
         <div className="mt-14 mx-auto max-w-3xl">
-          <Card className="p-10 border-border text-center">
-            <Eye className="h-7 w-7 text-accent mx-auto" />
-            <h3 className="mt-5 text-2xl font-semibold text-foreground">Our Vision</h3>
-            <p className="mt-3 leading-relaxed text-muted-foreground">
-              Making your business better. Much Better. We exist to give every organization
-              the clarity, tools, and digital craftsmanship needed to reach its full potential
-              and create lasting, meaningful growth.
-            </p>
-          </Card>
+          <BorderGlow backgroundColor="transparent" borderRadius={16} glowColor="190 80 60">
+            <Card className="p-10 border-border text-center bg-card">
+              <Eye className="h-7 w-7 text-accent mx-auto" />
+              <h3 className="mt-5 text-2xl font-semibold text-foreground">Our Vision</h3>
+              <p className="mt-3 leading-relaxed text-muted-foreground">
+                Making your business better. Much Better. We exist to give every organization
+                the clarity, tools, and digital craftsmanship needed to reach its full potential
+                and create lasting, meaningful growth.
+              </p>
+            </Card>
+          </BorderGlow>
         </div>
       </div>
     </section>
@@ -126,16 +130,15 @@ export function Services() {
         />
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {services.map((s) => (
-            <Card
-              key={s.title}
-              className="p-8 border-border hover:shadow-lg hover:-translate-y-1 transition-all group cursor-default"
-            >
-              <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                <s.icon className="h-6 w-6" />
-              </div>
-              <h3 className="mt-5 text-xl font-semibold text-foreground">{s.title}</h3>
-              <p className="mt-3 text-muted-foreground leading-relaxed">{s.desc}</p>
-            </Card>
+            <BorderGlow key={s.title} backgroundColor="transparent" borderRadius={16} glowColor="190 80 60" className="h-full">
+              <Card className="p-8 border-border hover:shadow-lg hover:-translate-y-1 transition-all group cursor-default bg-card h-full">
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                  <s.icon className="h-6 w-6" />
+                </div>
+                <h3 className="mt-5 text-xl font-semibold text-foreground">{s.title}</h3>
+                <p className="mt-3 text-muted-foreground leading-relaxed">{s.desc}</p>
+              </Card>
+            </BorderGlow>
           ))}
         </div>
       </div>
@@ -160,13 +163,17 @@ export function Process() {
         />
         <ol className="grid gap-6 md:grid-cols-2 lg:grid-cols-5">
           {steps.map((s, i) => (
-            <li key={s.title} className="relative rounded-2xl border border-border p-6 bg-card">
-              <div className="absolute -top-3 -left-3 h-9 w-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold shadow">
-                {i + 1}
-              </div>
-              <s.icon className="h-6 w-6 text-accent" />
-              <h3 className="mt-3 font-semibold text-foreground">{s.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
+            <li key={s.title} className="relative h-full">
+              <BorderGlow backgroundColor="hsl(var(--card))" borderRadius={16} glowColor="190 80 60" className="h-full">
+                <div className="relative rounded-2xl p-6 bg-card h-full">
+                  <div className="absolute -top-3 -left-3 h-9 w-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold shadow z-10">
+                    {i + 1}
+                  </div>
+                  <s.icon className="h-6 w-6 text-accent" />
+                  <h3 className="mt-3 font-semibold text-foreground">{s.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
+                </div>
+              </BorderGlow>
             </li>
           ))}
         </ol>
@@ -195,11 +202,13 @@ export function WhyUs() {
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {points.map((p) => (
-            <div key={p.title} className="rounded-2xl border border-primary-foreground/15 p-8 bg-primary-foreground/5">
-              <p.icon className="h-7 w-7 text-accent" />
-              <h3 className="mt-4 text-xl font-semibold">{p.title}</h3>
-              <p className="mt-2 text-primary-foreground/80">{p.desc}</p>
-            </div>
+            <BorderGlow key={p.title} backgroundColor="transparent" borderRadius={16} glowColor="45 90 65" className="h-full">
+              <div className="rounded-2xl p-8 bg-primary-foreground/5 h-full">
+                <p.icon className="h-7 w-7 text-accent" />
+                <h3 className="mt-4 text-xl font-semibold">{p.title}</h3>
+                <p className="mt-2 text-primary-foreground/80">{p.desc}</p>
+              </div>
+            </BorderGlow>
           ))}
         </div>
       </div>
@@ -303,8 +312,23 @@ export function Contact() {
     }
   };
   return (
-    <section id="contact" className="scroll-mt-24 py-24 md:py-32 bg-background">
-      <div className="mx-auto max-w-3xl px-6">
+    <section id="contact" className="relative scroll-mt-24 py-24 md:py-32 bg-background overflow-hidden">
+      <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
+        <SideRays
+          speed={2.5}
+          rayColor1="#EAB308"
+          rayColor2="#96c8ff"
+          intensity={2}
+          spread={2}
+          origin="top-right"
+          tilt={0}
+          saturation={1.5}
+          blend={0.75}
+          falloff={1.6}
+          opacity={1.0}
+        />
+      </div>
+      <div className="relative z-10 mx-auto max-w-3xl px-6">
         <SectionHeading
           eyebrow="Contact"
           title="Lets make something better, much better."
@@ -317,7 +341,8 @@ export function Contact() {
             <span>Location: South Africa</span>
           </div>
         </div>
-        <Card className="p-8 border-border">
+        <BorderGlow backgroundColor="transparent" borderRadius={16} glowColor="190 80 60">
+          <Card className="p-8 border-border bg-card">
           <h3 className="mb-6 text-2xl font-semibold text-foreground">Send Us a Message</h3>
           <form onSubmit={onSubmit} noValidate className="space-y-5">
             <div className="grid md:grid-cols-2 gap-5">
@@ -371,7 +396,8 @@ export function Contact() {
               </Button>
             </div>
           </form>
-        </Card>
+          </Card>
+        </BorderGlow>
       </div>
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <DialogContent className="sm:max-w-md">
