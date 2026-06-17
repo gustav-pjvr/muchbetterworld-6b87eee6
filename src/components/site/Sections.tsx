@@ -312,8 +312,23 @@ export function Contact() {
     }
   };
   return (
-    <section id="contact" className="scroll-mt-24 py-24 md:py-32 bg-background">
-      <div className="mx-auto max-w-3xl px-6">
+    <section id="contact" className="relative scroll-mt-24 py-24 md:py-32 bg-background overflow-hidden">
+      <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
+        <SideRays
+          speed={2.5}
+          rayColor1="#EAB308"
+          rayColor2="#96c8ff"
+          intensity={2}
+          spread={2}
+          origin="top-right"
+          tilt={0}
+          saturation={1.5}
+          blend={0.75}
+          falloff={1.6}
+          opacity={1.0}
+        />
+      </div>
+      <div className="relative z-10 mx-auto max-w-3xl px-6">
         <SectionHeading
           eyebrow="Contact"
           title="Lets make something better, much better."
@@ -326,7 +341,8 @@ export function Contact() {
             <span>Location: South Africa</span>
           </div>
         </div>
-        <Card className="p-8 border-border">
+        <BorderGlow backgroundColor="transparent" borderRadius={16} glowColor="190 80 60">
+          <Card className="p-8 border-border bg-card">
           <h3 className="mb-6 text-2xl font-semibold text-foreground">Send Us a Message</h3>
           <form onSubmit={onSubmit} noValidate className="space-y-5">
             <div className="grid md:grid-cols-2 gap-5">
@@ -380,7 +396,8 @@ export function Contact() {
               </Button>
             </div>
           </form>
-        </Card>
+          </Card>
+        </BorderGlow>
       </div>
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <DialogContent className="sm:max-w-md">
