@@ -81,16 +81,23 @@ const BorderGlow = ({
   innerClassName = '',
   edgeSensitivity = 30,
   glowColor = '40 80 80',
-  backgroundColor = '#120F17',
+  backgroundColor = 'transparent',
   borderRadius = 28,
   glowRadius = 40,
   glowIntensity = 1.0,
   coneSpread = 25,
   animated = false,
-  colors = ['#c084fc', '#f472b6', '#38bdf8'],
-  fillOpacity = 0.5,
+  colors,
+  fillOpacity = 0,
   style,
 }: BorderGlowProps) => {
+  // Default gradient colors derived from glowColor so the border tint matches.
+  const { h, s, l } = parseHSL(glowColor);
+  const resolvedColors = colors ?? [
+    `hsl(${h} ${s}% ${Math.min(l + 10, 95)}%)`,
+    `hsl(${(h + 20) % 360} ${s}% ${l}%)`,
+    `hsl(${(h + 340) % 360} ${s}% ${Math.max(l - 10, 20)}%)`,
+  ];
   const cardRef = useRef<HTMLDivElement>(null);
 
   const getCenterOfElement = useCallback((el: HTMLElement) => {
