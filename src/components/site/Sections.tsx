@@ -37,21 +37,48 @@ import {
   Puzzle,
 } from "lucide-react";
 import SideRays from "@/components/ui/SideRays";
+import { Highlighter } from "@/components/ui/Highlighter";
 
 function SectionHeading({
   eyebrow,
   title,
   intro,
+  highlight,
 }: {
   eyebrow: string;
   title: string;
   intro?: string;
+  highlight?: string;
 }) {
+  const renderTitle = () => {
+    if (!highlight) return title;
+    const idx = title.indexOf(highlight);
+    if (idx === -1) return title;
+    const before = title.slice(0, idx);
+    const after = title.slice(idx + highlight.length);
+    return (
+      <>
+        {before}
+        <Highlighter
+          action="underline"
+          color="#EAB308"
+          strokeWidth={2.5}
+          iterations={2}
+          animationDuration={900}
+          padding={4}
+          isView
+        >
+          {highlight}
+        </Highlighter>
+        {after}
+      </>
+    );
+  };
   return (
     <div className="mx-auto max-w-3xl text-center mb-14">
       <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent">{eyebrow}</p>
       <h2 className="mt-3 text-3xl md:text-5xl font-semibold tracking-tight text-foreground">
-        {title}
+        {renderTitle()}
       </h2>
       {intro && <p className="mt-5 text-lg text-muted-foreground">{intro}</p>}
     </div>
@@ -66,7 +93,9 @@ export function About() {
           eyebrow="About"
           title="Building Better Businesses Through Better Solutions"
           intro="MuchBetter helps organizations identify opportunities, solve operational challenges, and implement digital solutions."
+          highlight="Better Businesses Through Better Solutions"
         />
+
         <div className="mx-auto max-w-4xl space-y-6 text-lg leading-relaxed text-muted-foreground">
           <p>
             We combine business analysis, strategic consulting, and modern website development
