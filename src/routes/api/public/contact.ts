@@ -28,9 +28,40 @@ const ContactSchema = z.object({
 const NOTIFICATION_RECIPIENT =
   process.env.NOTIFICATION_EMAIL ?? "gustav@muchbetter.world";
 
-const SITE_NAME = "muchbetterworld";
-const SENDER_DOMAIN = "notify.muchbetter.world";
-const FROM_DOMAIN = "muchbetter.world";
+async function sendTransactional(
+  origin: string,
+  serviceKey: string,
+  body: {
+    templateName: string;
+    recipientEmail: string;
+    idempotencyKey: string;
+    templateData: Record<string, unknown>;
+  },
+): Promise<void> {
+  try {
+    const res = await fetch(`${origin}/lovable/email/transactional/send`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${serviceKey}`,
+      },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      console.warn("[contact] transactional send failed", {
+        template: body.templateName,
+        status: res.status,
+        body: text.slice(0, 500),
+      });
+    }
+  } catch (err) {
+    console.warn("[contact] transactional send threw", {
+      template: body.templateName,
+      err,
+    });
+  }
+}
 
 export const Route = createFileRoute("/api/public/contact")({
   server: {
@@ -77,77 +108,38 @@ export const Route = createFileRoute("/api/public/contact")({
           );
         }
 
-        // Best-effort: render + enqueue the admin notification email directly,
-        // so the submission isn't lost if the email infra is still warming up.
-        try {
-          const React = await import("react");
-          const { render } = await import("@react-email/components");
-          const { template } = await import(
-            "@/lib/email-templates/signup-notification"
-          );
+        const origin = new URL(request.url).origin;
+        const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-          const templateData = {
-            name: data.name,
-            email: data.email,
-            company: data.company || null,
-            phone: data.phone || null,
-            projectType: data.projectType || null,
-            message: data.message || "",
-            submittedAt: inserted.created_at,
-          };
-
-          const element = React.createElement(
-            template.component,
-            templateData,
-          );
-          const html = await render(element);
-          const text = await render(element, { plainText: true });
-          const subject =
-            typeof template.subject === "function"
-              ? template.subject(templateData)
-              : template.subject;
-
-          const messageId = crypto.randomUUID();
-
-          await supabaseAdmin.from("email_send_log").insert({
-            message_id: messageId,
-            template_name: "signup-notification",
-            recipient_email: NOTIFICATION_RECIPIENT,
-            status: "pending",
+        if (serviceKey) {
+          // Notify the site owner
+          await sendTransactional(origin, serviceKey, {
+            templateName: "signup-notification",
+            recipientEmail: NOTIFICATION_RECIPIENT,
+            idempotencyKey: `signup-notification-${inserted.id}`,
+            templateData: {
+              name: data.name,
+              email: data.email,
+              company: data.company || null,
+              phone: data.phone || null,
+              projectType: data.projectType || null,
+              message: data.message || "",
+              submittedAt: inserted.created_at,
+            },
           });
 
-          const { error: enqueueError } = await supabaseAdmin.rpc(
-            "enqueue_email",
-            {
-              queue_name: "transactional_emails",
-              payload: {
-                message_id: messageId,
-                to: NOTIFICATION_RECIPIENT,
-                from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
-                sender_domain: SENDER_DOMAIN,
-                subject,
-                html,
-                text,
-                purpose: "transactional",
-                label: "signup-notification",
-                idempotency_key: `signup-notification-${inserted.id}`,
-                queued_at: new Date().toISOString(),
-              },
+          // Confirmation to the submitter
+          await sendTransactional(origin, serviceKey, {
+            templateName: "contact-confirmation",
+            recipientEmail: data.email,
+            idempotencyKey: `contact-confirmation-${inserted.id}`,
+            templateData: {
+              name: data.name,
+              message: data.message || "",
             },
-          );
-
-          if (enqueueError) {
-            console.warn("[contact] enqueue failed:", enqueueError);
-            await supabaseAdmin.from("email_send_log").insert({
-              message_id: messageId,
-              template_name: "signup-notification",
-              recipient_email: NOTIFICATION_RECIPIENT,
-              status: "failed",
-              error_message: `enqueue_email: ${enqueueError.message}`,
-            });
-          }
-        } catch (err) {
-          console.warn("[contact] notification render/enqueue failed:", err);
+          });
+        } else {
+          console.warn("[contact] SUPABASE_SERVICE_ROLE_KEY missing — skipping email send");
         }
 
         return Response.json({ ok: true });
