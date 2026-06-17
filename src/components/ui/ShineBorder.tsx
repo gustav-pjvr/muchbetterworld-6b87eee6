@@ -55,7 +55,7 @@ export function ShineBorder({
       {...props}
     >
       <div
-        className="relative z-10 h-full overflow-hidden"
+        className="relative z-10 h-full"
         style={{ borderRadius: "inherit" }}
       >
         {children}
