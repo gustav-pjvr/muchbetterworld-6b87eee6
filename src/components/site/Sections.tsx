@@ -38,6 +38,7 @@ import {
 } from "lucide-react";
 import SideRays from "@/components/ui/SideRays";
 import { Highlighter } from "@/components/ui/Highlighter";
+import { ShineBorder } from "@/components/ui/ShineBorder";
 
 function SectionHeading({
   eyebrow,
@@ -106,24 +107,26 @@ export function About() {
           </p>
         </div>
         <div className="mt-14 mx-auto max-w-3xl">
-          <Card className="p-10 border-border text-center bg-card">
-            <Eye className="h-7 w-7 text-accent mx-auto" />
-            <h3 className="mt-5 text-2xl font-semibold text-foreground">Our Vision</h3>
-            <p className="mt-3 leading-relaxed text-muted-foreground">
-              <Highlighter
-                action="underline"
-                color="#EAB308"
-                strokeWidth={2.5}
-                iterations={2}
-                animationDuration={900}
-                padding={4}
-                isView
-              >
-                Making your business better. Much Better.
-              </Highlighter>{" "}
-              We exist to give every organization the clarity, tools, and digital craftsmanship needed to reach its full potential and create lasting, meaningful growth.
-            </p>
-          </Card>
+          <ShineBorder className="rounded-xl" borderWidth={2} duration={14} shineColor="rgba(255,255,255,0.6)">
+            <Card className="p-10 text-center bg-card border-0">
+              <Eye className="h-7 w-7 text-accent mx-auto" />
+              <h3 className="mt-5 text-2xl font-semibold text-foreground">Our Vision</h3>
+              <p className="mt-3 leading-relaxed text-muted-foreground">
+                <Highlighter
+                  action="underline"
+                  color="#EAB308"
+                  strokeWidth={2.5}
+                  iterations={2}
+                  animationDuration={900}
+                  padding={4}
+                  isView
+                >
+                  Making your business better. Much Better.
+                </Highlighter>{" "}
+                We exist to give every organization the clarity, tools, and digital craftsmanship needed to reach its full potential and create lasting, meaningful growth.
+              </p>
+            </Card>
+          </ShineBorder>
         </div>
       </div>
     </section>
@@ -163,13 +166,15 @@ export function Services() {
         />
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {services.map((s) => (
-            <Card key={s.title} className="p-8 border-border hover:shadow-lg hover:-translate-y-1 transition-all group cursor-default bg-card h-full">
-              <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                <s.icon className="h-6 w-6" />
-              </div>
-              <h3 className="mt-5 text-xl font-semibold text-foreground">{s.title}</h3>
-              <p className="mt-3 text-muted-foreground leading-relaxed">{s.desc}</p>
-            </Card>
+            <ShineBorder key={s.title} className="rounded-xl" borderWidth={2} duration={14} shineColor="rgba(255,255,255,0.6)">
+              <Card className="p-8 hover:shadow-lg hover:-translate-y-1 transition-all group cursor-default bg-card h-full border-0">
+                <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                  <s.icon className="h-6 w-6" />
+                </div>
+                <h3 className="mt-5 text-xl font-semibold text-foreground">{s.title}</h3>
+                <p className="mt-3 text-muted-foreground leading-relaxed">{s.desc}</p>
+              </Card>
+            </ShineBorder>
           ))}
         </div>
       </div>
@@ -195,14 +200,16 @@ export function Process() {
         <ol className="grid gap-6 md:grid-cols-2 lg:grid-cols-5">
           {steps.map((s, i) => (
             <li key={s.title} className="relative h-full">
-              <div className="relative rounded-2xl p-6 bg-card h-full">
-                <div className="absolute -top-3 -left-3 h-9 w-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold shadow z-10">
-                  {i + 1}
+              <ShineBorder className="rounded-2xl" borderWidth={2} duration={14} shineColor="rgba(255,255,255,0.6)">
+                <div className="relative p-6 bg-card h-full">
+                  <div className="absolute -top-3 -left-3 h-9 w-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold shadow z-10">
+                    {i + 1}
+                  </div>
+                  <s.icon className="h-6 w-6 text-accent" />
+                  <h3 className="mt-3 font-semibold text-foreground">{s.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
                 </div>
-                <s.icon className="h-6 w-6 text-accent" />
-                <h3 className="mt-3 font-semibold text-foreground">{s.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{s.desc}</p>
-              </div>
+              </ShineBorder>
             </li>
           ))}
         </ol>
@@ -231,11 +238,13 @@ export function WhyUs() {
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {points.map((p) => (
-            <div key={p.title} className="rounded-2xl p-8 bg-primary-foreground/5 h-full">
-              <p.icon className="h-7 w-7 text-accent" />
-              <h3 className="mt-4 text-xl font-semibold">{p.title}</h3>
-              <p className="mt-2 text-primary-foreground/80">{p.desc}</p>
-            </div>
+            <ShineBorder key={p.title} className="rounded-2xl" borderWidth={2} duration={14} shineColor="rgba(255,255,255,0.6)">
+              <div className="p-8 bg-primary-foreground/5 h-full">
+                <p.icon className="h-7 w-7 text-accent" />
+                <h3 className="mt-4 text-xl font-semibold">{p.title}</h3>
+                <p className="mt-2 text-primary-foreground/80">{p.desc}</p>
+              </div>
+            </ShineBorder>
           ))}
         </div>
       </div>
