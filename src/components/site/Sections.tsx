@@ -107,24 +107,26 @@ export function About() {
           </p>
         </div>
         <div className="mt-14 mx-auto max-w-3xl">
-          <Card className="p-10 border-border text-center bg-card">
-            <Eye className="h-7 w-7 text-accent mx-auto" />
-            <h3 className="mt-5 text-2xl font-semibold text-foreground">Our Vision</h3>
-            <p className="mt-3 leading-relaxed text-muted-foreground">
-              <Highlighter
-                action="underline"
-                color="#EAB308"
-                strokeWidth={2.5}
-                iterations={2}
-                animationDuration={900}
-                padding={4}
-                isView
-              >
-                Making your business better. Much Better.
-              </Highlighter>{" "}
-              We exist to give every organization the clarity, tools, and digital craftsmanship needed to reach its full potential and create lasting, meaningful growth.
-            </p>
-          </Card>
+          <ShineBorder className="rounded-xl" borderWidth={2} duration={14} shineColor="rgba(255,255,255,0.35)">
+            <Card className="p-10 text-center bg-card border-0">
+              <Eye className="h-7 w-7 text-accent mx-auto" />
+              <h3 className="mt-5 text-2xl font-semibold text-foreground">Our Vision</h3>
+              <p className="mt-3 leading-relaxed text-muted-foreground">
+                <Highlighter
+                  action="underline"
+                  color="#EAB308"
+                  strokeWidth={2.5}
+                  iterations={2}
+                  animationDuration={900}
+                  padding={4}
+                  isView
+                >
+                  Making your business better. Much Better.
+                </Highlighter>{" "}
+                We exist to give every organization the clarity, tools, and digital craftsmanship needed to reach its full potential and create lasting, meaningful growth.
+              </p>
+            </Card>
+          </ShineBorder>
         </div>
       </div>
     </section>
