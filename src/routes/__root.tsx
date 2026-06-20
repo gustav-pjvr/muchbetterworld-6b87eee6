@@ -90,8 +90,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "MuchBetter" },
       { name: "twitter:description", content: "MuchBetter helps organizations identify opportunities, solve operational challenges, and ship modern websites that drive business results." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/1e4fb59b-e509-46c6-b7c7-6e8e5f3a2561/id-preview-eb38880a--4d7e2d37-49b4-4756-8925-258ef7fe3969.lovable.app-1781180469381.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/1e4fb59b-e509-46c6-b7c7-6e8e5f3a2561/id-preview-eb38880a--4d7e2d37-49b4-4756-8925-258ef7fe3969.lovable.app-1781180469381.png" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/28a8887e-9742-4b3f-a86e-54aad192688d" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/28a8887e-9742-4b3f-a86e-54aad192688d" },
     ],
     links: [
       {
