@@ -88,7 +88,7 @@ export function ClientShowcaseButton() {
                   >
                     <div className="w-20 h-14 shrink-0 rounded border border-border bg-secondary/40 overflow-hidden">
                       {s.preview_url && s.preview_status === "ready" ? (
-                        <img src={s.preview_url} alt="" className="w-full h-full object-cover" />
+                        <img src={s.preview_url} alt={`Website preview of ${s.name}`} className="w-full h-full object-cover" />
                       ) : null}
                     </div>
                     <div className="min-w-0 flex-1">
