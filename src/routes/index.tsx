@@ -51,6 +51,20 @@ export const Route = createFileRoute("/")({
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
+          "@type": "ProfessionalService",
+          name: "MuchBetter",
+          url: "https://muchbetter.world/",
+          telephone: "+27 67 833 7199",
+          areaServed: "ZA",
+          address: { "@type": "PostalAddress", addressCountry: "ZA" },
+          description:
+            "Business analysis, consulting, and website development for growing organizations in South Africa and beyond.",
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
           "@type": "Service",
           serviceType: "Business Analysis",
           provider: { "@type": "Organization", name: "MuchBetter", url: "https://muchbetterworld.lovable.app/" },
@@ -100,9 +114,10 @@ function Hero() {
         <h1
           className="mt-6 text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tight text-foreground leading-[1.05]"
         >
-          Better solutions.
-          <br />
-          <span className="text-primary">Much better World.</span>
+          <span className="sr-only">MuchBetter — Business Analysis, Consulting, and Website Development for Growth. </span>
+          <span aria-hidden="true">Better solutions.</span>
+          <br aria-hidden="true" />
+          <span aria-hidden="true" className="text-primary">Much better World.</span>
         </h1>
         <p
           className="animate-hero mx-auto mt-8 max-w-2xl text-lg md:text-xl text-muted-foreground"

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://muchbetterworld.lovable.app/sitemap.xml
+Sitemap: https://muchbetter.world/sitemap.xml

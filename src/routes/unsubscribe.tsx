@@ -6,7 +6,11 @@ export const Route = createFileRoute("/unsubscribe")({
   head: () => ({
     meta: [
       { title: "Unsubscribe — muchbetter.world" },
+      { name: "description", content: "Confirm that you want to stop receiving emails from muchbetter.world at your address." },
       { name: "robots", content: "noindex,nofollow" },
+      { property: "og:title", content: "Unsubscribe — muchbetter.world" },
+      { property: "og:description", content: "Confirm that you want to stop receiving emails from muchbetter.world." },
+      { property: "og:url", content: "https://muchbetter.world/unsubscribe" },
     ],
   }),
 });

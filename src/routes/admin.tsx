@@ -38,7 +38,11 @@ export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
       { title: "Admin — MuchBetter" },
+      { name: "description", content: "Internal MuchBetter admin console for managing client showcase entries, site theme, and email delivery. Authorized staff only." },
       { name: "robots", content: "noindex, nofollow" },
+      { property: "og:title", content: "Admin — MuchBetter" },
+      { property: "og:description", content: "Internal MuchBetter admin console. Authorized staff only." },
+      { property: "og:url", content: "https://muchbetter.world/admin" },
     ],
   }),
   component: AdminPage,
@@ -300,7 +304,7 @@ function AdminContent({ email }: { email: string }) {
                   <div className="w-24 h-16 shrink-0 rounded border border-border bg-secondary/40 overflow-hidden flex items-center justify-center">
                     {s.preview_url && s.preview_status === "ready" ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={s.preview_url} alt="" className="w-full h-full object-cover" />
+                      <img src={s.preview_url} alt={`Website preview of ${s.name}`} className="w-full h-full object-cover" />
                     ) : busy ? (
                       <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
                     ) : (
